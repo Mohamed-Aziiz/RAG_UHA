@@ -1,0 +1,113 @@
+# configs/config.yaml — tout se regle ici, jamais dans le code.
+# Les cles API sont dans .env (voir .env.example), jamais dans ce fichier.
+
+app:
+  name: "Assistant UHA"            # nom provisoire : a changer ici seulement
+  logo_path: app/assets/logo_uha.png
+  default_mode: both               # rag | graphrag | both (cote a cote)
+  # Les couleurs sont dans .streamlit/config.toml (mecanisme natif de Streamlit).
+
+pipeline: rag                      # architecture par defaut : rag | graphrag
+                                   # surcharge : variable d'environnement RAG_UHA_PIPELINE
+
+paths:
+  raw_dir: data/raw                # fichiers scrapes (txt, md, html, pdf)
+  documents_csv: data/raw/documents.csv
+  chunks_file: data/chunks/chunks.jsonl
+  chroma_dir: data/artifacts/chroma
+  lightrag_dir: data/artifacts/lightrag
+  runs_dir: data/runs
+  results_dir: eval/results
+  questions_file: eval/questions.jsonl
+  demo_cache_file: data/demo_cache.json
+
+# ---- LLM : trois roles, chacun avec son fournisseur et son modele ----------
+# Changer de fournisseur = changer base_url + model. Pas de bascule automatique.
+
+llm_indexing:                      # extraction d'entites (LightRAG), gros volume
+  provider: groq                   # groq | ollama (journal seulement)
+  base_url: https://api.groq.com/openai/v1
+  model: openai/gpt-oss-20b        # quota separe du modele de generation
+  api_key_env: GROQ_API_KEY        # nom de la variable dans .env (null pour Ollama)
+  temperature: 0.0
+  max_tokens: 2000
+  max_concurrency: 1               # offre gratuite ; 4 en offre Developer
+  extra: { reasoning_effort: low } # modeles a raisonnement : court
+  # Variante locale (plan B) :
+  # provider: ollama
+  # base_url: http://localhost:11434/v1
+  # model: qwen3:8b
+  # api_key_env: null
+  # extra: {}
+
+llm_query:                         # generation des reponses, RAG ET GraphRAG
+  provider: groq
+  base_url: https://api.groq.com/openai/v1
+  model: openai/gpt-oss-120b
+  api_key_env: GROQ_API_KEY
+  temperature: 0.0
+  max_tokens: 700
+  max_concurrency: 1
+  extra: { reasoning_effort: low }
+
+llm_judge:                         # juge RAGAS
+  provider: groq
+  base_url: https://api.groq.com/openai/v1
+  model: qwen/qwen3.8-27b
+  api_key_env: GROQ_API_KEY
+  temperature: 0.0
+  max_tokens: 1500
+  max_concurrency: 1
+  extra: {}
+
+retry:                             # gestion des 429 / 413 / 5xx, commune aux 3 roles
+  max_attempts: 8
+  min_wait_s: 5
+  max_wait_s: 120
+
+# ---- Embeddings : un seul modele pour tout --------------------------------
+embeddings:
+  provider: cloudflare             # cloudflare | local (plan B, sentence-transformers)
+  model: "@cf/baai/bge-m3"
+  account_id_env: CF_ACCOUNT_ID
+  api_token_env: CF_API_TOKEN
+  batch_size: 50                   # <= 100 textes par requete Cloudflare
+  dim: 1024
+
+# ---- Decoupage commun -----------------------------------------------------
+chunking:
+  chunk_tokens: 1200               # defaut LightRAG, repris pour le RAG
+  overlap_tokens: 100
+  tokenizer: cl100k_base           # tiktoken, juste pour compter
+
+# ---- RAG classique --------------------------------------------------------
+rag:
+  collection: uha_chunks
+  top_k: 4                         # 4 x 1200 + prompt < 8000 tokens/min (gratuit)
+
+# ---- GraphRAG -------------------------------------------------------------
+graphrag:
+  mode: hybrid                     # local | global | hybrid | mix
+  top_k: 20
+  max_total_tokens: 5000           # budget du contexte envoye au LLM (gratuit) ; 10000 en payant
+  entity_extract_max_gleaning: 0   # 0 = un seul passage d'extraction ; 1 = plus complet (+80 % tokens)
+  force_llm_summary_on_merge: 6
+  summary_language: English        # langue pivot des descriptions du graphe
+  entity_types: [Formation, Diplome, Composante, Service, Personne, Cours, Lieu, Procedure, Date, Organisation]
+  enable_llm_cache: true
+
+# ---- Generation (commune aux deux pipelines) ------------------------------
+generation:
+  answer_in_question_language: true
+  cite_sources: true
+  refuse_if_no_context: true
+
+# ---- Evaluation -----------------------------------------------------------
+eval:
+  k: 4                             # Hit@k, MRR au niveau du document
+  ragas_metrics: [faithfulness, answer_relevancy, answer_correctness]
+  ragas_optional: [context_precision]
+  price_per_m_tokens:              # tarifs Groq [entree, sortie] en $ par million de tokens
+    openai/gpt-oss-20b: [0.075, 0.30]
+    openai/gpt-oss-120b: [0.15, 0.60]
+    qwen/qwen3.8-27b: [0.30, 0.60]

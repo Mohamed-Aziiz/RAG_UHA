@@ -1,0 +1,3 @@
+# Sorties des notebooks retirées avant chaque commit (uv run nbstripout --install)
+*.ipynb filter=nbstripout
+*.ipynb diff=ipynb
