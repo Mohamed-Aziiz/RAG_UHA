@@ -60,6 +60,23 @@ def test_retry_on_429(monkeypatch):
     assert len(calls) == 2
 
 
+def test_400_is_not_retried_and_isolates_bad_text(monkeypatch):
+    def handler(request):
+        texts = json.loads(request.content)["text"]
+        assert json.loads(request.content)["truncate_inputs"] is True
+        if any("BAD" in t for t in texts):
+            return httpx.Response(
+                400, json={"success": False, "errors": [{"code": 3016, "message": "too long"}]}
+            )
+        return _ok(request)
+
+    emb, calls = _embedder(monkeypatch, handler, batch_size=4)
+    with pytest.raises(RuntimeError, match="Cloudflare refuse ce texte"):
+        emb.embed_documents(["ok1", "BAD text", "ok2"])
+    # 1 appel pour le lot, puis texte par texte jusqu'au fautif : jamais de boucle de retry
+    assert len(calls) <= 4
+
+
 def test_fails_on_bad_shape(monkeypatch):
     def bad(request):
         return httpx.Response(200, json={"success": True, "result": {"data": [[1.0, 0.0]]}})

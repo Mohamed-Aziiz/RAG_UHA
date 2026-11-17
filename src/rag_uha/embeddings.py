@@ -30,6 +30,14 @@ log = logging.getLogger(__name__)
 _RETRY_STATUS = {408, 409, 429, 500, 502, 503, 504}
 
 
+class CloudflareRequestError(RuntimeError):
+    """Erreur 4xx définitive (requête invalide, texte trop long…) : ne pas réessayer."""
+
+    def __init__(self, status: int, body: str) -> None:
+        super().__init__(f"HTTP {status} : {body}")
+        self.status = status
+
+
 class Embedder:
     """Interface commune. Les sous-classes implémentent `_embed_batch`."""
 
@@ -86,16 +94,18 @@ class CloudflareEmbedder(Embedder):
             headers={"Authorization": f"Bearer {cfg.api_token}"}, timeout=120
         )
 
-    def _embed_batch(self, texts: list[str]) -> np.ndarray:
+    def _post(self, texts: list[str]) -> np.ndarray:
+        """Un appel HTTP. 4xx (sauf 408/429) = erreur définitive : on remonte le message de Cloudflare."""
         for attempt in range(1, self.retry.max_attempts + 1):
             try:
-                r = self._client.post(self.url, json={"text": texts})
+                r = self._client.post(self.url, json={"text": texts, "truncate_inputs": True})
                 if r.status_code in _RETRY_STATUS:
                     raise httpx.HTTPStatusError("retryable", request=r.request, response=r)
-                r.raise_for_status()
+                if r.status_code >= 400:
+                    raise CloudflareRequestError(r.status_code, r.text[:500])
                 payload = r.json()
                 if not payload.get("success", True):
-                    raise RuntimeError(f"Cloudflare : {payload.get('errors')}")
+                    raise CloudflareRequestError(r.status_code, str(payload.get("errors"))[:500])
                 return np.asarray(payload["result"]["data"], dtype=np.float32)
             except (httpx.HTTPStatusError, httpx.TransportError) as exc:
                 if attempt == self.retry.max_attempts:
@@ -106,6 +116,18 @@ class CloudflareEmbedder(Embedder):
                 )
                 time.sleep(wait)
         raise RuntimeError("unreachable")
+
+    def _embed_batch(self, texts: list[str]) -> np.ndarray:
+        try:
+            return self._post(texts)
+        except CloudflareRequestError as exc:
+            if len(texts) == 1:
+                raise RuntimeError(
+                    f"Cloudflare refuse ce texte ({exc}) : {texts[0][:120]!r}…"
+                ) from exc
+            # Un seul texte fautif fait échouer tout le lot : on isole le coupable un par un.
+            log.warning("Lot de %d textes refusé (%s) : passage texte par texte", len(texts), exc)
+            return np.vstack([self._embed_batch([t]) for t in texts])
 
 
 class LocalEmbedder(Embedder):
