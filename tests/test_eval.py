@@ -100,7 +100,7 @@ def test_report_tables_and_figures(tmp_path: Path):
             {"id": [q.id for q in qs], "faithfulness": 0.9, "answer_correctness": 0.7}
         ),
     }
-    per_q, main, by_cat, by_lang = build_tables({"rag": recs, "graphrag": g_recs}, ragas, s)
+    per_q, main, _by_cat, _by_lang = build_tables({"rag": recs, "graphrag": g_recs}, ragas, s)
     assert set(main.columns) == {"axe", "métrique", "rag", "graphrag"}
     assert main.loc["faithfulness", "graphrag"] == 0.9
     assert main.loc["latency_median_s", "graphrag"] == 2 * main.loc["latency_median_s", "rag"]

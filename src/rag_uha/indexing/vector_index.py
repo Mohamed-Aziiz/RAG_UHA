@@ -42,9 +42,8 @@ def write_metadata(path: Path, data: dict) -> None:
 
 def _collection(settings: Settings, reset: bool = False):
     client = chromadb.PersistentClient(path=str(settings.paths.chroma_dir))
-    if reset:
-        if any(c.name == settings.rag.collection for c in client.list_collections()):
-            client.delete_collection(settings.rag.collection)
+    if reset and any(c.name == settings.rag.collection for c in client.list_collections()):
+        client.delete_collection(settings.rag.collection)
     return client.get_or_create_collection(
         settings.rag.collection, metadata={"hnsw:space": "cosine"}
     )
