@@ -27,6 +27,7 @@ dependencies = [
     "ragas>=0.4,<0.5",
     "langchain-openai>=0.3",
     "pandas>=2",
+    "matplotlib>=3.8",
     # Config, app
     "pydantic>=2",
     "pyyaml>=6",

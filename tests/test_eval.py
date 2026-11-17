@@ -76,3 +76,35 @@ def test_runner_resume_and_scores(tmp_path: Path):
         and agg["false_refusal_rate"] == 0.0
     )
     assert agg["cost_usd_per_question"] > 0
+
+
+def test_report_tables_and_figures(tmp_path: Path):
+    import pandas as pd
+
+    from rag_uha.eval.report import build_tables, examples_markdown, save_figures, to_markdown
+
+    s = load_settings()
+    qs = load_questions(s.paths.questions_file)
+    recs = run_pipeline(StubPipeline(), qs, tmp_path / "rag.jsonl")
+    import copy
+
+    g_recs = copy.deepcopy(recs)
+    for r in g_recs:
+        r.answer.pipeline = "graphrag"
+        r.answer.latency_s *= 2
+    ragas = {
+        "rag": pd.DataFrame(
+            {"id": [q.id for q in qs], "faithfulness": 0.8, "answer_correctness": 0.6}
+        ),
+        "graphrag": pd.DataFrame(
+            {"id": [q.id for q in qs], "faithfulness": 0.9, "answer_correctness": 0.7}
+        ),
+    }
+    per_q, main, by_cat, by_lang = build_tables({"rag": recs, "graphrag": g_recs}, ragas, s)
+    assert set(main.columns) == {"axe", "métrique", "rag", "graphrag"}
+    assert main.loc["faithfulness", "graphrag"] == 0.9
+    assert main.loc["latency_median_s", "graphrag"] == 2 * main.loc["latency_median_s", "rag"]
+    assert "| axe |" in to_markdown(main.reset_index(drop=True), index=False)
+    figs = save_figures(per_q, main, tmp_path / "res")
+    assert len(figs) == 3 and all(f.exists() for f in figs)
+    assert "q0" in examples_markdown({"rag": recs, "graphrag": g_recs}, per_q)
