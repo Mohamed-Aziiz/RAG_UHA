@@ -61,7 +61,7 @@ class PathsSettings(_Strict):
 class LLMSettings(_Strict):
     """Un rôle de LLM (indexing, query ou judge)."""
 
-    provider: Literal["groq", "ollama", "openai"] = "groq"
+    provider: Literal["groq", "openrouter", "ollama", "openai"] = "groq"
     base_url: str
     model: str
     api_key_env: str | None = "GROQ_API_KEY"

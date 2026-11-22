@@ -25,7 +25,7 @@ paths:
 # Changer de fournisseur = changer base_url + model. Pas de bascule automatique.
 
 llm_indexing:                      # extraction d'entites (LightRAG), gros volume
-  provider: groq                   # groq | ollama (journal seulement)
+  provider: groq                   # groq | openrouter | ollama (journal seulement)
   base_url: https://api.groq.com/openai/v1
   model: openai/gpt-oss-20b        # quota separe du modele de generation
   api_key_env: GROQ_API_KEY        # nom de la variable dans .env (null pour Ollama)
@@ -33,6 +33,12 @@ llm_indexing:                      # extraction d'entites (LightRAG), gros volum
   max_tokens: 2000
   max_concurrency: 1               # offre gratuite ; 4 en offre Developer
   extra: { reasoning_effort: low } # modeles a raisonnement : court
+  # Variante OpenRouter (même modèle, paiement à l'usage, si Groq est saturé) :
+  # provider: openrouter
+  # base_url: https://openrouter.ai/api/v1
+  # model: openai/gpt-oss-20b
+  # api_key_env: OPENROUTER_API_KEY
+  # max_concurrency: 4
   # Variante locale (plan B) :
   # provider: ollama
   # base_url: http://localhost:11434/v1
@@ -111,3 +117,4 @@ eval:
     openai/gpt-oss-20b: [0.075, 0.30]
     openai/gpt-oss-120b: [0.15, 0.60]
     qwen/qwen3.8-27b: [0.30, 0.60]
+    # OpenRouter : mêmes identifiants de modèle ; prix variables selon le fournisseur routé (≈ 0.03 / 0.14 pour gpt-oss-20b)
