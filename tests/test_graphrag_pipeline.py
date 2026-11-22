@@ -128,3 +128,12 @@ def test_build_graph_and_query(settings, hash_embedder, monkeypatch, tmp_path):
     assert set(ans.sources) <= {"master-ds", "fst"}
     system, prompt = llm.prompts[-1]
     assert "SAME LANGUAGE" in system and "Knowledge graph" in prompt
+
+
+def test_lightrag_does_not_resplit_our_chunks(settings, hash_embedder):
+    """Un chunk de 1 200 tokens doit donner UN seul chunk LightRAG (donc un seul appel d'extraction)."""
+    from rag_uha.indexing.graph_index import make_lightrag
+
+    rag = make_lightrag(settings, llm=FakeGraphLLM(), embedder=hash_embedder)
+    assert rag.chunk_overlap_token_size == 0
+    assert rag.chunk_token_size >= settings.chunking.chunk_tokens + settings.chunking.overlap_tokens

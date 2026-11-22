@@ -98,3 +98,9 @@ def test_jsonl_roundtrip(tmp_path: Path):
     chunks = build_chunks(docs, out, s)
     assert load_chunks(out) == chunks
     assert {c.lang for c in chunks} == {"fr", "en"}
+
+
+def test_technical_files_are_skipped(tmp_path: Path):
+    (tmp_path / "doc-fr.txt").write_text(FR, encoding="utf-8")
+    (tmp_path / "_scrape_report.md").write_text("# Rapport\n\n" + FR, encoding="utf-8")
+    assert [d.doc_id for d in load_documents(tmp_path)] == ["doc-fr"]

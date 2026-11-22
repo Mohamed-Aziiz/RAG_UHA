@@ -67,8 +67,11 @@ def make_lightrag(
         embedding_func=as_lightrag_embedding_func(embedder),
         embedding_func_max_async=2,
         embedding_batch_num=settings.embeddings.batch_size,
-        chunk_token_size=settings.chunking.chunk_tokens,
-        chunk_overlap_token_size=settings.chunking.overlap_tokens,
+        # Nos chunks sont déjà découpés (chunking.py). LightRAG ne doit PAS les redécouper : avec
+        # 1200 / 100, tout texte de plus de 1100 tokens donnait un 2e petit chunk (le recouvrement),
+        # donc un appel LLM de plus par chunk, sans entité. Fenêtre large et sans recouvrement.
+        chunk_token_size=settings.chunking.chunk_tokens * 2,
+        chunk_overlap_token_size=0,
         entity_extract_max_gleaning=g.entity_extract_max_gleaning,
         force_llm_summary_on_merge=g.force_llm_summary_on_merge,
         enable_llm_cache=g.enable_llm_cache,

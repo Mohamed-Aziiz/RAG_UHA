@@ -137,6 +137,7 @@ def load_documents(raw_dir: Path, documents_csv: Path | None = None) -> list[Doc
             not path.is_file()
             or path.suffix.lower() not in SUPPORTED
             or path.name == "documents.csv"
+            or path.name.startswith(("_", "."))  # fichiers techniques (_scrape_report.md…)
         ):
             continue
         doc = load_document(path, overrides.get(path.stem))
