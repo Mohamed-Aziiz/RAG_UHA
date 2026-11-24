@@ -27,7 +27,7 @@ paths:
 llm_indexing:
   provider: openrouter
   base_url: https://openrouter.ai/api/v1
-  model: openai/gpt-oss-20b
+  model: openai/gpt-oss-120b      # 120b pour un graphe de meilleure qualite (reconstruction du 24/11)
   api_key_env: OPENROUTER_API_KEY
   temperature: 0.0
   max_tokens: 3000
@@ -74,7 +74,7 @@ llm_judge:                         # juge RAGAS
   temperature: 0.0
   max_tokens: 1500
   max_concurrency: 4
-  extra: {}
+  extra: { reasoning: { enabled: false } }  # sans reflexion : sortie a 1,50 $/M, et evite les NaN
 
 retry:                             # gestion des 429 / 413 / 5xx, commune aux 3 roles
   max_attempts: 8
