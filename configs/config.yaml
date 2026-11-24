@@ -30,8 +30,8 @@ llm_indexing:                      # extraction d'entites (LightRAG), gros volum
   model: openai/gpt-oss-120b       # 120b pour un graphe de meilleure qualite (reconstruction du 24/11)
   api_key_env: OPENROUTER_API_KEY  # nom de la variable dans .env (null pour Ollama)
   temperature: 0.0
-  max_tokens: 3000
-  max_concurrency: 4               # appels simultanes au LLM (debit, pas qualite)
+  max_tokens: 5000
+  max_concurrency: 5               # appels simultanes au LLM (debit, pas qualite)
   extra: { reasoning_effort: low } # modeles a raisonnement : court
   # Variante locale (plan B, sans Internet) :
   # provider: ollama
@@ -49,8 +49,8 @@ llm_query:                         # generation des reponses, RAG ET GraphRAG
   api_key_env: OPENROUTER_API_KEY
   api_key_env: OPENROUTER_API_KEY
   temperature: 0.0
-  max_tokens: 700
-  max_concurrency: 4
+  max_tokens: 1500
+  max_concurrency: 5
   extra: { reasoning_effort: low }
 
 llm_judge:                         # juge RAGAS
@@ -58,10 +58,9 @@ llm_judge:                         # juge RAGAS
   base_url: https://openrouter.ai/api/v1
   model: qwen/qwen3.8-27b
   api_key_env: OPENROUTER_API_KEY
-  api_key_env: OPENROUTER_API_KEY
   temperature: 0.0
   max_tokens: 1500
-  max_concurrency: 4
+  max_concurrency: 10
   extra: { reasoning: { enabled: false } }  # sans reflexion : sortie a 1,50 $/M, et evite les NaN
 
 retry:                             # gestion des 429 / 413 / 5xx, commune aux 3 roles
@@ -87,7 +86,7 @@ chunking:
 # ---- RAG classique --------------------------------------------------------
 rag:
   collection: uha_chunks
-  top_k: 4                         # passages envoyes au LLM (parametre du protocole)
+  top_k: 6                         # passages envoyes au LLM (parametre du protocole)
   rerank: false
   rerank_model: "@cf/baai/bge-reranker-base"
   rerank_candidates: 50            # candidats vectoriels avant fusion (et reranking s'il est actif)
@@ -103,7 +102,7 @@ rag:
 graphrag:
   mode: hybrid                     # local | global | hybrid | mix
   top_k: 20
-  max_total_tokens: 20000        # budget du contexte envoye au LLM (OpenRouter, paiement a l'usage)
+  max_total_tokens: 10000        # budget du contexte envoye au LLM (OpenRouter, paiement a l'usage)
                                    # a 5000, les tableaux entites+relations saturaient le budget
                                    # et LightRAG ne remontait AUCUN passage (23/25 questions)
   entity_extract_max_gleaning: 0   # 0 = un seul passage d'extraction ; 1 = plus complet (+80 % tokens)
