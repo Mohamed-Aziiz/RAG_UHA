@@ -48,6 +48,8 @@ CHUNKS = [
 def settings(tmp_path: Path):
     s = load_settings()
     s.paths.chroma_dir = tmp_path / "chroma"
+    s.rag.rerank = False  # les tests tournent hors ligne : pas d'appel au reranker
+    s.rag.hybrid = False  # et sur leurs propres chunks, pas sur data/chunks
     return s
 
 

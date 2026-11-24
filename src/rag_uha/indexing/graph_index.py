@@ -77,6 +77,7 @@ def make_lightrag(
         enable_llm_cache=g.enable_llm_cache,
         enable_llm_cache_for_entity_extract=g.enable_llm_cache,
         max_parallel_insert=1,
+        kg_chunk_pick_method=g.kg_chunk_pick_method,  # voir GraphRAGSettings
         entity_extraction_use_json=True,  # sortie JSON : plus robuste avec les petits modèles
         addon_params={
             "language": g.summary_language,

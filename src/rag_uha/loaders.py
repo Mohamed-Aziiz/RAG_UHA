@@ -52,13 +52,22 @@ def _read_html(path: Path) -> tuple[str, str | None]:
 
 
 def _read_pdf(path: Path) -> tuple[str, str | None]:
-    from pypdf import PdfReader
+    """Texte d'un PDF dans l'ordre VISUEL de lecture (PyMuPDF, blocs tries par position).
 
-    reader = PdfReader(str(path))
-    pages = [(page.extract_text() or "").strip() for page in reader.pages]
-    title = None
-    if reader.metadata and reader.metadata.title:
-        title = str(reader.metadata.title).strip() or None
+    pypdf.extract_text() suit l'ordre interne du fichier, pas l'ordre de lecture. Sur la
+    plaquette de l'offre de formation, les titres de section (LICENCES PROFESSIONNELLES,
+    MASTERS), dessines a part, ressortaient ensemble en tete de page, detaches de leurs
+    listes : le texte indexe ne disait plus qu'une formation etait un master, et le LLM
+    refusait a juste titre d'affirmer ce que son contexte ne disait pas.
+    Le mode `layout` de pypdf remet l'ordre mais coupe les mots ("infor matique",
+    "p arcour s"), ce qui casse BM25 et les embeddings. PyMuPDF fait les deux correctement.
+    """
+    import pymupdf
+
+    with pymupdf.open(str(path)) as doc:
+        pages = [page.get_text("text", sort=True).strip() for page in doc]
+        raw_title = (doc.metadata or {}).get("title") or ""
+    title = raw_title.strip() or None
     return "\n\n".join(p for p in pages if p), title
 
 

@@ -1,10 +1,21 @@
-# Couleurs de l'interface (charte UHA : remplacer par les codes officiels fournis)
+# Theme sombre sur le bleu nuit de l'UHA. Les deux arcs du logo : bleu (RAG classique) et
+# cyan (GraphRAG), eclaircis pour le fond sombre. Action : indigo du site www.uha.fr, eclairci. Interface en Archivo, reponses en Literata
+# (chargee par app/streamlit_app.py).
 [theme]
-primaryColor = "#004C97"            # couleur principale (boutons, accents)
-backgroundColor = "#FFFFFF"
-secondaryBackgroundColor = "#F2F5F9"
-textColor = "#1F2937"
-font = "sans serif"
+base = "dark"
+primaryColor = "#4F53E3"
+backgroundColor = "#0B1A30"
+secondaryBackgroundColor = "#13284A"
+textColor = "#E8EEF7"
+linkColor = "#7DB3F0"
+linkUnderline = true
+borderColor = "#22395E"
+baseRadius = "small"
+font = "Archivo:https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap, sans-serif"
+headingFont = "Archivo:https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap, sans-serif"
+
+[client]
+toolbarMode = "minimal"             # masque le bouton Deploy pendant la demo
 
 [server]
 headless = true

@@ -62,5 +62,5 @@ def to_html(graph: nx.Graph, out: Path, height: str = "600px") -> Path:
         )
     net.toggle_physics(True)
     out.parent.mkdir(parents=True, exist_ok=True)
-    net.write_html(str(out), open_browser=False, notebook=False)
+    out.write_text(net.generate_html(notebook=False), encoding="utf-8")
     return out

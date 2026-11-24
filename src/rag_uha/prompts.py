@@ -6,6 +6,8 @@ contexte diffère. C'est une condition de la comparaison équitable.
 
 from __future__ import annotations
 
+import re
+
 from rag_uha.types import RetrievedChunk
 
 ANSWER_SYSTEM = """You are the documentation assistant of the Université de Haute-Alsace (UHA).
@@ -42,14 +44,45 @@ def format_context(contexts: list[RetrievedChunk]) -> str:
     return "\n\n---\n\n".join(parts)
 
 
+_FR = {
+    "le", "la", "les", "un", "une", "des", "du", "de", "et", "est", "sont", "je", "j", "on",
+    "quel", "quelle", "quels", "quelles", "comment", "combien", "pourquoi", "ou", "qui",
+    "que", "qu", "quoi", "est-ce", "ce", "c", "mon", "ma", "mes", "il", "elle", "y", "a",
+    "pour", "avec", "dans", "sur", "pas", "peut", "faut", "l", "d", "au", "aux",
+}
+_EN = {
+    "the", "a", "an", "is", "are", "was", "do", "does", "did", "can", "could", "what",
+    "which", "who", "how", "where", "when", "why", "i", "my", "you", "of", "and", "in",
+    "to", "for", "with", "on", "at", "there", "if", "get", "any", "many", "much",
+}
+
+
+def question_language(question: str) -> str:
+    """'fr' ou 'en', par comptage de mots-outils. Les accents tranchent en cas d'egalite.
+
+    Le prompt systeme demande deja de repondre dans la langue de la question, mais
+    gpt-oss l'ignore quand le contexte est surtout en francais (3 questions anglaises sur 8
+    recevaient une reponse en francais). On detecte donc la langue dans le code et on
+    l'impose en fin de prompt, la ou le modele obeit le mieux.
+    """
+    mots = re.findall(r"[a-zà-ÿ'-]+", question.lower())
+    fr = sum(w in _FR for w in mots)
+    en = sum(w in _EN for w in mots)
+    if fr == en:
+        return "fr" if re.search(r"[éèêàùçôîâ]", question.lower()) else "en"
+    return "fr" if fr > en else "en"
+
+
 def answer_prompt(question: str, context_block: str) -> str:
+    langue = "French" if question_language(question) == "fr" else "English"
     return f"""---Context---
 {context_block}
 
 ---Question---
 {question}
 
----Answer---"""
+---Answer---
+(Write your answer in {langue}, whatever the language of the context.)"""
 
 
 def is_refusal(text: str) -> bool:

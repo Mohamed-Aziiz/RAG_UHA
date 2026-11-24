@@ -116,12 +116,16 @@ class GraphRAGPipeline:
         usage = kw_usage + self.llm.reset_usage()
 
         sources = list(dict.fromkeys(rc.chunk.doc_id for rc in contexts))
-        # documents cités via les entités / relations mais sans chunk remonté
-        for item in data.get("entities", []) + data.get("relationships", []):
-            for fp in str(item.get("file_path", "")).split("<SEP>"):
-                d = fp.split("::")[0]
-                if d and d != "unknown_source" and d not in sources:
-                    sources.append(d)
+        # Repli : seulement si AUCUN passage n'a ete remonte, on cite les documents
+        # attaches aux entites / relations. Inconditionnel, ce repli listait presque
+        # tout le corpus (96 a 145 documents sur 162), les entites generiques etant
+        # reliees a quasiment tous les documents.
+        if not contexts:
+            for item in data.get("entities", []) + data.get("relationships", []):
+                for fp in str(item.get("file_path", "")).split("<SEP>"):
+                    d = fp.split("::")[0]
+                    if d and d != "unknown_source" and d not in sources:
+                        sources.append(d)
 
         return Answer(
             question=question,

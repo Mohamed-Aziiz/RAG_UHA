@@ -121,6 +121,15 @@ class ChunkingSettings(_Strict):
 class RAGSettings(_Strict):
     collection: str = "uha_chunks"
     top_k: int = 4
+    rerank: bool = False  # reclasser les candidats avec un cross-encoder avant de garder top_k
+    rerank_model: str = "@cf/baai/bge-reranker-base"
+    rerank_candidates: int = 50  # passages remontes de ChromaDB avant reclassement
+    rerank_batch: int = 10  # passages par appel Cloudflare
+    hybrid: bool = False  # fusionner recherche vectorielle et BM25 (RRF)
+    bm25_candidates: int = 50  # passages remontes par BM25
+    rrf_k: int = 60  # constante de la Reciprocal Rank Fusion
+    fusion: Literal["interleave", "rrf"] = "interleave"  # comment fusionner vectoriel et BM25
+    bm25_slots: int = 2  # places du contexte reservees aux meilleurs resultats BM25
 
 
 class GraphRAGSettings(_Strict):
@@ -132,6 +141,10 @@ class GraphRAGSettings(_Strict):
     summary_language: str = "English"
     entity_types: list[str] = Field(default_factory=list)
     enable_llm_cache: bool = True
+    # Choix des passages lies aux entites trouvees. VECTOR (defaut LightRAG) les classe par
+    # similarite avec la question brute : un mot present partout (« uha ») suffit alors a faire
+    # passer les pages generiques devant le bon passage. WEIGHT suit l'ordre des entites trouvees.
+    kg_chunk_pick_method: Literal["VECTOR", "WEIGHT"] = "WEIGHT"
 
 
 class GenerationSettings(_Strict):

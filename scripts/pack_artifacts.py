@@ -16,6 +16,7 @@ from pathlib import Path
 from rag_uha.config import load_settings
 
 PARTS = {
+    "raw": lambda s: s.paths.raw_dir,  # documents sources : sans eux, impossible de re-decouper
     "chunks": lambda s: s.paths.chunks_file.parent,
     "index": lambda s: s.paths.chroma_dir,
     "graph": lambda s: s.paths.lightrag_dir,
