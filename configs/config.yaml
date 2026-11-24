@@ -3,7 +3,7 @@
 
 app:
   name: "Assistant UHA"            # nom provisoire : a changer ici seulement
-  logo_path: app/assets/logo_uha.png
+  logo_path: app/assets/logo_uha.svg  # logo officiel du site www.uha.fr
   default_mode: both               # rag | graphrag | both (cote a cote)
   # Les couleurs sont dans .streamlit/config.toml (mecanisme natif de Streamlit).
 
@@ -57,23 +57,23 @@ llm_indexing:
   # extra: {}
 
 llm_query:                         # generation des reponses, RAG ET GraphRAG
-  provider: groq
-  base_url: https://api.groq.com/openai/v1
+  provider: openrouter
+  base_url: https://openrouter.ai/api/v1
   model: openai/gpt-oss-120b
-  api_key_env: GROQ_API_KEY
+  api_key_env: OPENROUTER_API_KEY
   temperature: 0.0
   max_tokens: 700
-  max_concurrency: 1
+  max_concurrency: 4
   extra: { reasoning_effort: low }
 
 llm_judge:                         # juge RAGAS
-  provider: groq
-  base_url: https://api.groq.com/openai/v1
+  provider: openrouter
+  base_url: https://openrouter.ai/api/v1
   model: qwen/qwen3.8-27b
-  api_key_env: GROQ_API_KEY
+  api_key_env: OPENROUTER_API_KEY
   temperature: 0.0
   max_tokens: 1500
-  max_concurrency: 1
+  max_concurrency: 4
   extra: {}
 
 retry:                             # gestion des 429 / 413 / 5xx, commune aux 3 roles
@@ -92,25 +92,39 @@ embeddings:
 
 # ---- Decoupage commun -----------------------------------------------------
 chunking:
-  chunk_tokens: 1200               # defaut LightRAG, repris pour le RAG
+  chunk_tokens: 1200               # valeur du protocole (cf. extraction PDF corrigee)
   overlap_tokens: 100
   tokenizer: cl100k_base           # tiktoken, juste pour compter
 
 # ---- RAG classique --------------------------------------------------------
 rag:
   collection: uha_chunks
-  top_k: 4                         # 4 x 1200 + prompt < 8000 tokens/min (gratuit)
+  top_k: 4                         # passages envoyes au LLM (parametre du protocole)
+  rerank: false
+  rerank_model: "@cf/baai/bge-reranker-base"
+  rerank_candidates: 50            # candidats vectoriels avant fusion (et reranking s'il est actif)
+  rerank_batch: 10                 # 10 par appel : 25 faisait echouer la requete
+  hybrid: true                     # fusion vectoriel + BM25 : les termes rares et exacts
+                                   # (ex. 'ingenierie mathematique') ne remontent que par BM25
+  bm25_candidates: 50
+  fusion: interleave               # 1er vectoriel, meilleurs BM25, puis suite du vectoriel | rrf
+  bm25_slots: 2                    # teste a 1 : hit@4 0,773 -> 0,727, factuelles 0,90 -> 0,80
+  rrf_k: 60                        # utilise seulement si fusion: rrf
 
 # ---- GraphRAG -------------------------------------------------------------
 graphrag:
   mode: hybrid                     # local | global | hybrid | mix
   top_k: 20
-  max_total_tokens: 5000           # budget du contexte envoye au LLM (gratuit) ; 10000 en payant
+  max_total_tokens: 20000        # budget du contexte envoye au LLM (OpenRouter, paiement a l'usage)
+                                   # a 5000, les tableaux entites+relations saturaient le budget
+                                   # et LightRAG ne remontait AUCUN passage (23/25 questions)
   entity_extract_max_gleaning: 0   # 0 = un seul passage d'extraction ; 1 = plus complet (+80 % tokens)
   force_llm_summary_on_merge: 6
   summary_language: English        # langue pivot des descriptions du graphe
   entity_types: [Formation, Diplome, Composante, Service, Personne, Cours, Lieu, Procedure, Date, Organisation]
   enable_llm_cache: true
+  kg_chunk_pick_method: WEIGHT     # VECTOR classait les passages par similarite avec la question brute :
+                                   # avec « uha » dans la question, le passage du master disparaissait
 
 # ---- Generation (commune aux deux pipelines) ------------------------------
 generation:
@@ -123,8 +137,11 @@ eval:
   k: 4                             # Hit@k, MRR au niveau du document
   ragas_metrics: [faithfulness, answer_relevancy, answer_correctness]
   ragas_optional: [context_precision]
-  price_per_m_tokens:              # tarifs Groq [entree, sortie] en $ par million de tokens
-    openai/gpt-oss-20b: [0.075, 0.30]
-    openai/gpt-oss-120b: [0.15, 0.60]
-    qwen/qwen3.8-27b: [0.30, 0.60]
+  price_per_m_tokens:              # tarifs OpenRouter [entree, sortie] en $ par million de tokens
+                                   # (tarifs affiches le 23/11/2026 ; ils varient selon le
+                                   #  fournisseur route par OpenRouter. Le cout reellement
+                                   #  facture est sur openrouter.ai/activity)
+    openai/gpt-oss-20b: [0.017, 0.085]
+    openai/gpt-oss-120b: [0.03, 0.15]
+    qwen/qwen3.8-27b: [0.035, 1.50]
     # OpenRouter : mêmes identifiants de modèle ; prix variables selon le fournisseur routé (≈ 0.03 / 0.14 pour gpt-oss-20b)

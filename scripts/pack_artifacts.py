@@ -16,6 +16,7 @@ from pathlib import Path
 from rag_uha.config import load_settings
 
 PARTS = {
+    "raw": lambda s: s.paths.raw_dir,  # documents sources : sans eux, impossible de re-decouper
     "chunks": lambda s: s.paths.chunks_file.parent,
     "index": lambda s: s.paths.chroma_dir,
     "graph": lambda s: s.paths.lightrag_dir,
@@ -35,7 +36,7 @@ def main() -> None:
     out.mkdir(parents=True, exist_ok=True)
     try:
         commit = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], text=True).strip()
-    except Exception:  # noqa: BLE001
+    except Exception:
         commit = "unknown"
 
     for name in args.only:

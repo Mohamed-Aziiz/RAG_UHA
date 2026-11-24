@@ -53,7 +53,9 @@ def test_metrics_basic():
 
 def test_runner_resume_and_scores(tmp_path: Path):
     s = load_settings()
-    qs = load_questions(s.paths.questions_file)
+    # Jeu d'exemple propre au test : ne depend pas de eval/questions.jsonl, qui evolue
+    # au fil du projet (les 25 vraies questions ont des gold_docs reels).
+    qs = load_questions(Path(__file__).parent / "fixtures" / "questions_example.jsonl")
     assert validate_questions(qs, {"uha-presentation", "uha-overview"}) == []
     assert summarize(qs)["by_category"]["hors_corpus"] == 1
 

@@ -22,13 +22,24 @@ from rag_uha.llm import LLMClient, get_llm
 from rag_uha.prompts import ANSWER_SYSTEM, answer_prompt, format_context
 from rag_uha.types import Answer, Chunk, RetrievedChunk
 
+_LOOP: asyncio.AbstractEventLoop | None = None
+
 
 def _run(coro):
-    """Exécute une coroutine, y compris depuis un notebook ou Streamlit (boucle déjà active)."""
+    """Exécute une coroutine dans UNE boucle asyncio persistante.
+
+    `asyncio.run` créait une boucle neuve à chaque question : LightRAG relançait alors ses
+    workers d'embedding (« bound to a different event loop ») et le client HTTP asynchrone,
+    ce qui ajoutait de la latence au GraphRAG et faussait la mesure des performances.
+    Depuis un notebook (boucle déjà active), on passe par nest_asyncio.
+    """
+    global _LOOP
     try:
         asyncio.get_running_loop()
     except RuntimeError:
-        return asyncio.run(coro)
+        if _LOOP is None or _LOOP.is_closed():
+            _LOOP = asyncio.new_event_loop()
+        return _LOOP.run_until_complete(coro)
     import nest_asyncio
 
     nest_asyncio.apply()
@@ -116,12 +127,16 @@ class GraphRAGPipeline:
         usage = kw_usage + self.llm.reset_usage()
 
         sources = list(dict.fromkeys(rc.chunk.doc_id for rc in contexts))
-        # documents cités via les entités / relations mais sans chunk remonté
-        for item in data.get("entities", []) + data.get("relationships", []):
-            for fp in str(item.get("file_path", "")).split("<SEP>"):
-                d = fp.split("::")[0]
-                if d and d != "unknown_source" and d not in sources:
-                    sources.append(d)
+        # Repli : seulement si AUCUN passage n'a ete remonte, on cite les documents
+        # attaches aux entites / relations. Inconditionnel, ce repli listait presque
+        # tout le corpus (96 a 145 documents sur 162), les entites generiques etant
+        # reliees a quasiment tous les documents.
+        if not contexts:
+            for item in data.get("entities", []) + data.get("relationships", []):
+                for fp in str(item.get("file_path", "")).split("<SEP>"):
+                    d = fp.split("::")[0]
+                    if d and d != "unknown_source" and d not in sources:
+                        sources.append(d)
 
         return Answer(
             question=question,
