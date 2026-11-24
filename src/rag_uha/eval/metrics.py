@@ -104,7 +104,10 @@ def aggregate(df: pd.DataFrame) -> pd.Series:
         "cost_usd_per_question": df["cost_usd"].mean(),
         "cost_usd_total": df["cost_usd"].sum(),
     }
+    # Scores RAGAS : moyenne sur les questions REPONDABLES seulement. Sur une question hors corpus,
+    # la bonne reponse est un refus, que RAGAS note 0 en pertinence ("non engagee") : l'inclure
+    # penaliserait le comportement attendu. Les hors corpus sont evaluees par correct_refusal_rate.
     for col in ("faithfulness", "answer_relevancy", "answer_correctness", "context_precision"):
         if col in df.columns:
-            out[col] = df[col].mean()
+            out[col] = ans[col].mean()
     return pd.Series(out)

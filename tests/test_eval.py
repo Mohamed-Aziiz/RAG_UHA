@@ -110,3 +110,26 @@ def test_report_tables_and_figures(tmp_path: Path):
     figs = save_figures(per_q, main, tmp_path / "res")
     assert len(figs) == 3 and all(f.exists() for f in figs)
     assert "q0" in examples_markdown({"rag": recs, "graphrag": g_recs}, per_q)
+
+
+def test_ragas_means_exclude_out_of_corpus():
+    import pandas as pd
+
+    df = pd.DataFrame(
+        {
+            "answerable": [True, True, False],
+            "hit_at_k": [1.0, 0.0, float("nan")],
+            "mrr": [1.0, 0.0, float("nan")],
+            "doc_recall_at_k": [1.0, 0.0, float("nan")],
+            "correct_refusal": [False, False, True],
+            "false_refusal": [False, False, False],
+            "latency_s": [1, 1, 1],
+            "retrieval_latency_s": [0, 0, 0],
+            "total_tokens": [1, 1, 1],
+            "prompt_tokens": [1, 1, 1],
+            "n_calls": [1, 1, 1],
+            "cost_usd": [0, 0, 0],
+            "answer_relevancy": [0.8, 0.6, 0.0],
+        }
+    )
+    assert aggregate(df)["answer_relevancy"] == 0.7
