@@ -104,7 +104,7 @@ def test_report_tables_and_figures(tmp_path: Path):
     }
     per_q, main, _by_cat, _by_lang = build_tables({"rag": recs, "graphrag": g_recs}, ragas, s)
     assert set(main.columns) == {"axe", "métrique", "rag", "graphrag"}
-    assert main.loc["faithfulness", "graphrag"] == 0.9
+    assert abs(main.loc["faithfulness", "graphrag"] - 0.9) < 1e-9
     assert main.loc["latency_median_s", "graphrag"] == 2 * main.loc["latency_median_s", "rag"]
     assert "| axe |" in to_markdown(main.reset_index(drop=True), index=False)
     figs = save_figures(per_q, main, tmp_path / "res")
