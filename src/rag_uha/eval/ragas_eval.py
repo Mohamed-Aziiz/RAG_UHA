@@ -55,7 +55,12 @@ def _value(res) -> float:
 
 async def _score_one(rec: RunRecord, metrics: dict) -> dict[str, float]:
     q, a = rec.question, rec.answer
-    contexts = [rc.chunk.text for rc in a.contexts] or ["(no context retrieved)"]
+    # Contextes = TOUT ce que le LLM de generation a recu : les passages, plus, pour le GraphRAG,
+    # le resume des entites et relations du graphe (meme regle pour les deux pipelines).
+    contexts = [rc.chunk.text for rc in a.contexts]
+    if a.extra.get("graph_context"):
+        contexts.append(a.extra["graph_context"])
+    contexts = contexts or ["(no context retrieved)"]
     out: dict[str, float] = {}
     for name, m in metrics.items():
         try:

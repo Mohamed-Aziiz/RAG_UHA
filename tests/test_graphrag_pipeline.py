@@ -137,3 +137,34 @@ def test_lightrag_does_not_resplit_our_chunks(settings, hash_embedder):
     rag = make_lightrag(settings, llm=FakeGraphLLM(), embedder=hash_embedder)
     assert rag.chunk_overlap_token_size == 0
     assert rag.chunk_token_size >= settings.chunking.chunk_tokens + settings.chunking.overlap_tokens
+
+
+def test_judge_sees_graph_context():
+    """Le juge reçoit les passages ET le résumé du graphe envoyé au LLM."""
+    import asyncio
+
+    from rag_uha.eval.dataset import EvalQuestion, RunRecord
+    from rag_uha.eval.ragas_eval import _score_one
+    from rag_uha.types import Answer, RetrievedChunk, Usage
+
+    seen = {}
+
+    class M:
+        async def ascore(self, **kw):
+            seen.update(kw)
+            return 1.0
+
+    ans = Answer(
+        "q",
+        "r",
+        "graphrag",
+        [RetrievedChunk(CHUNKS[0], 1)],
+        ["master-ds"],
+        Usage(),
+        1.0,
+        extra={"graph_context": "Knowledge graph — entities:\n- FST (Composante): ..."},
+    )
+    q = EvalQuestion("q1", "q", "fr", "factual", "ref", ["master-ds"])
+    asyncio.run(_score_one(RunRecord(q, ans), {"faithfulness": M()}))
+    assert seen["retrieved_contexts"][-1].startswith("Knowledge graph")
+    assert len(seen["retrieved_contexts"]) == 2

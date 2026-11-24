@@ -59,8 +59,13 @@ llm_judge:                         # juge RAGAS
   model: qwen/qwen3.8-27b
   api_key_env: OPENROUTER_API_KEY
   temperature: 0.0
+<<<<<<< HEAD
   max_tokens: 1500
   max_concurrency: 10
+=======
+  max_tokens: 4000                 # reponses longues du GraphRAG : evite les NaN par troncature
+  max_concurrency: 4
+>>>>>>> 089d46548c8e66ccf10d7fe39a853ea8235a3da5
   extra: { reasoning: { enabled: false } }  # sans reflexion : sortie a 1,50 $/M, et evite les NaN
 
 retry:                             # gestion des 429 / 413 / 5xx, commune aux 3 roles
