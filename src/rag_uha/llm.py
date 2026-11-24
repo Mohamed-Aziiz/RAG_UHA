@@ -301,4 +301,6 @@ def as_ragas_llm(llm: LLMClient, legacy: bool = False):
         ),
         temperature=llm.cfg.temperature,
         max_tokens=llm.cfg.max_tokens,
+        # `extra` du YAML (ex. reasoning: {enabled: false}) transmis à chaque appel du juge
+        **({"extra_body": dict(llm.cfg.extra)} if llm.cfg.extra else {}),
     )
