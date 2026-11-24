@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+from pathlib import Path
 
 from rag_uha.chunking import load_chunks
 from rag_uha.config import load_settings
@@ -38,11 +39,15 @@ def main() -> None:
         default=0.0,
         help="pause entre questions (s), utile en offre gratuite",
     )
+    p.add_argument(
+        "--questions", default=None,
+        help="fichier de questions (défaut : paths.questions_file ; ex. eval/questions_dev.jsonl)",
+    )
     p.add_argument("--check", action="store_true")
     args = p.parse_args()
     s = load_settings(args.config)
 
-    qs = load_questions(s.paths.questions_file)
+    qs = load_questions(Path(args.questions) if args.questions else s.paths.questions_file)
     known = (
         {c.doc_id for c in load_chunks(s.paths.chunks_file)}
         if s.paths.chunks_file.exists()
