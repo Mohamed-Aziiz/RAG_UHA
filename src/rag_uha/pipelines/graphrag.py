@@ -120,7 +120,8 @@ class GraphRAGPipeline:
         contexts = [self._to_chunk(c, i) for i, c in enumerate(data.get("chunks", []), start=1)]
         t_ret = time.perf_counter() - t0
 
-        context_block = self._graph_block(data)
+        graph_context = self._graph_block(data)
+        context_block = graph_context
         if contexts:
             context_block += "\n\nSource passages:\n" + format_context(contexts)
         text = self.llm.complete(answer_prompt(question, context_block), system=ANSWER_SYSTEM)
@@ -158,5 +159,8 @@ class GraphRAGPipeline:
                     {"src": r["src_id"], "tgt": r["tgt_id"]} for r in data.get("relationships", [])
                 ],
                 "keywords": res.get("metadata", {}).get("keywords", {}),
+                # Texte des entites / relations reellement envoye au LLM : le juge doit le voir
+                # aussi, sinon une affirmation tiree du graphe compte comme une hallucination.
+                "graph_context": graph_context,
             },
         )
