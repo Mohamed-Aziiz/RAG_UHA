@@ -17,7 +17,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", default="configs/config.yaml")
     parser.add_argument(
-        "--ping", action="store_true", help="fait un appel réel à Groq et Cloudflare"
+        "--ping", action="store_true", help="fait un appel réel au LLM (OpenRouter) et à Cloudflare"
     )
     args = parser.parse_args()
 
@@ -62,7 +62,7 @@ def main() -> int:
             messages=[{"role": "user", "content": "Réponds juste : OK"}],
             extra_body=llm.extra or None,
         )
-        print(f"Groq     : {r.choices[0].message.content!r} ({r.usage.total_tokens} tokens)")
+        print(f"LLM      : {r.choices[0].message.content!r} ({r.usage.total_tokens} tokens)")
 
         url = (
             f"https://api.cloudflare.com/client/v4/accounts/{s.embeddings.account_id}"

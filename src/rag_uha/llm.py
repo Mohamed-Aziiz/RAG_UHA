@@ -1,13 +1,13 @@
 """Couche LLM unique : le seul endroit du projet qui parle à un LLM.
 
 Un `LLMClient` par rôle (indexing, query, judge). Chaque rôle lit son fournisseur et son modèle
-dans la config : changer de fournisseur (Groq ↔ Ollama) = changer `base_url` + `model` dans
+dans la config : changer de fournisseur (OpenRouter ↔ Ollama) = changer `base_url` + `model` dans
 le YAML, sans toucher au code. Tous les fournisseurs sont compatibles avec l'API OpenAI.
 
 Ce module :
 - compte les tokens de chaque appel (`usage`), pour le 4e axe de la comparaison ;
 - réessaie avec attente exponentielle sur les erreurs 429 (quota), 413 (requête trop grosse pour
-  le quota par minute) et 5xx, en respectant l'en-tête `retry-after` quand Groq le donne ;
+  le quota par minute) et 5xx, en respectant l'en-tête `retry-after` quand le fournisseur le donne ;
 - limite la concurrence des appels asynchrones (`max_concurrency`) ;
 - fournit trois adaptateurs : LlamaIndex (RAG), LightRAG (GraphRAG) et RAGAS (juge).
 
@@ -43,7 +43,7 @@ _RETRY_STATUS = {408, 409, 413, 429, 500, 502, 503, 504}
 def _wait_seconds(exc: Exception, attempt: int, retry: RetrySettings) -> float:
     """Durée d'attente avant le prochain essai.
 
-    Groq renvoie souvent `retry-after` (en secondes) sur les 429 : on le respecte.
+    Les fournisseurs renvoient souvent `retry-after` (en secondes) sur les 429 : on le respecte.
     Sinon : attente exponentielle bornée, avec un peu de hasard pour ne pas repartir pile au
     même instant.
     """
@@ -75,7 +75,7 @@ def _should_retry(exc: Exception) -> bool:
 
 
 class LLMClient:
-    """Client compatible OpenAI (Groq, Ollama, OpenAI) pour un rôle donné."""
+    """Client compatible OpenAI (OpenRouter, Ollama, OpenAI) pour un rôle donné."""
 
     def __init__(self, role: Role, cfg: LLMSettings, retry: RetrySettings) -> None:
         self.role = role
@@ -271,7 +271,7 @@ def as_ragas_llm(llm: LLMClient, legacy: bool = False):
     """Juge pour RAGAS.
 
     - `legacy=False` (API RAGAS 0.3+/0.4, `ragas.metrics.collections`) : `llm_factory` avec un
-      client OpenAI pointé sur Groq. Pas de LangChain nécessaire.
+      client OpenAI pointé sur OpenRouter. Pas de LangChain nécessaire.
     - `legacy=True` (ancienne API `ragas.evaluate` + `ragas.metrics.faithfulness`…) :
       `LangchainLLMWrapper(ChatOpenAI(...))`, nécessite `langchain-openai`.
     Le choix définitif se fait à la tâche T13, après le test sur 2 questions.

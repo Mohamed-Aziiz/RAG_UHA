@@ -27,7 +27,7 @@ référence, et de comparer les deux selon quatre axes :
 | Performances | Latence, tokens consommés, temps et coût d'indexation. |
 
 Contraintes de conception : démo simple (une page Streamlit), aucun serveur ni Docker, tout
-configurable dans un fichier, exécutable sous Windows, quotas gratuits des API respectés.
+configurable dans un fichier, exécutable sous Windows, budget de quelques euros (API payées à l'usage).
 
 ## 2. Données
 
@@ -39,7 +39,9 @@ règlements et procédures, vie étudiante. Les fichiers sont conservés dans le
 
 **Volume.** ⟨à compléter depuis `data/chunks/stats.json`⟩ : N documents (N FR / N EN), N tokens,
 N chunks. Le corpus est volontairement petit : il est dimensionné pour que l'indexation du graphe
-(le poste le plus coûteux, ≈ 5 000 tokens de LLM par chunk) tienne dans les quotas gratuits.
+(le poste le plus coûteux, ≈ 3 300 tokens de LLM par chunk mesurés) reste rapide et peu cher.
+Le quota gratuit de Groq, utilisé au départ, s'est révélé insuffisant (≈ 200 000 tokens par jour et
+par modèle) et son offre payante était fermée aux nouveaux comptes : tous les LLM passent par OpenRouter.
 
 **Préparation** (`scripts/build_chunks.py`) :
 1. chargement par format — HTML nettoyé avec *trafilatura* (menus et pieds de page retirés), PDF
@@ -59,7 +61,7 @@ flowchart TB
         LOAD["loaders.py : txt / md / html / pdf"]
         CHK["chunking.py : chunks.jsonl (1 200 / 100 tokens)"]
         EMB["embeddings.py : BGE-M3 (API Cloudflare)"]
-        LLM["llm.py : Groq, 3 rôles (indexing / query / judge)"]
+        LLM["llm.py : OpenRouter, 3 rôles (indexing / query / judge)"]
         PR["prompts.py : même prompt de réponse"]
     end
     subgraph RAG["RAG classique — LlamaIndex"]
@@ -104,16 +106,21 @@ Choix d'implémentation notables :
   rapprochement ;
 - extraction en mode JSON et descriptions en anglais (langue pivot), noms d'entités dans leur forme
   officielle avec sigle, pour limiter les doublons FR / EN ;
-- `entity_extract_max_gleaning: 0` (un seul passage d'extraction) et `max_total_tokens: 5000`
-  pour tenir dans les quotas ; le cache LLM permet de reprendre une indexation interrompue.
+- `entity_extract_max_gleaning: 0` (un seul passage d'extraction), pour limiter le coût d'indexation ;
+  le cache LLM permet de reprendre une indexation interrompue ;
+- `max_total_tokens: 20000` : à 5 000, les tableaux d'entités et de relations saturaient le budget de
+  contexte et LightRAG ne remontait aucun passage sur 23 questions sur 25 ;
+- `kg_chunk_pick_method: WEIGHT` : les passages liés aux entités sont choisis dans l'ordre des entités
+  trouvées, et non par similarité avec la question brute (un mot présent partout, « UHA », faisait
+  passer les pages génériques devant le bon passage).
 
 ## 4. Modèles utilisés
 
 | Rôle | Modèle | Fournisseur | Pourquoi |
 | --- | --- | --- | --- |
-| Indexation du graphe (`llm_indexing`) | `openai/gpt-oss-20b` | Groq | gros volume d'appels ; quota séparé du modèle de génération |
-| Génération des réponses (`llm_query`) | `openai/gpt-oss-120b` | Groq | qualité ; **commun aux deux architectures** |
-| Juge RAGAS (`llm_judge`) | `qwen/qwen3.8-27b` | Groq | différent du générateur, pour éviter l'auto-évaluation |
+| Indexation du graphe (`llm_indexing`) | `openai/gpt-oss-120b` | OpenRouter | extraction d'entités et de relations de meilleure qualité qu'avec le 20b, pour un coût de quelques centimes |
+| Génération des réponses (`llm_query`) | `openai/gpt-oss-120b` | OpenRouter | qualité ; **commun aux deux architectures** |
+| Juge RAGAS (`llm_judge`) | `qwen/qwen3.8-27b` (réflexion désactivée) | OpenRouter | différent du générateur, pour éviter l'auto-évaluation |
 | Embeddings | `@cf/baai/bge-m3` (1 024 dim.) | Cloudflare Workers AI | multilingue FR ↔ EN ; par API, rien à télécharger |
 
 Tous les modèles sont appelés via une API compatible OpenAI ; chaque rôle se change dans
@@ -130,12 +137,12 @@ cd RAG_UHA
 uv python pin 3.11
 uv sync                          # crée .venv et installe tout (pas de PyTorch : embeddings par API)
 uv run nbstripout --install      # nettoie les sorties des notebooks avant chaque commit
-Copy-Item .env.example .env      # puis remplir GROQ_API_KEY, CF_ACCOUNT_ID, CF_API_TOKEN
+Copy-Item .env.example .env      # puis remplir OPENROUTER_API_KEY, CF_ACCOUNT_ID, CF_API_TOKEN
 uv run python scripts/check_setup.py --ping   # vérifie config, clés, et fait un appel réel à chaque API
 uv run pytest -q                 # tests hors ligne (24 tests, ~10 s)
 ```
 
-Clés nécessaires (gratuites) : [Groq](https://console.groq.com/keys) et
+Clés nécessaires : [OpenRouter](https://openrouter.ai/keys) (paiement à l'usage ; tout le projet coûte moins de 1 $) et
 [Cloudflare Workers AI](https://developers.cloudflare.com/workers-ai/get-started/rest-api/)
 (identifiant de compte + jeton API « Workers AI »).
 
@@ -200,7 +207,7 @@ Mêmes questions, même LLM de génération, même prompt, paramètres figés av
 | Fiabilité | Faithfulness | RAGAS : part des affirmations soutenues par les passages récupérés (1 − hallucination) |
 | Fiabilité | Refus corrects / refus à tort | détection d'une formule de refus sur les questions hors corpus / répondables |
 | Récupération | Hit@4, MRR, rappel documents | au niveau du **document** (seul repère commun aux deux pipelines) |
-| Performances | Latence médiane et p95, tokens, appels, coût | mesurés par la couche LLM ; coût au tarif Groq |
+| Performances | Latence médiane et p95, tokens, appels, coût | mesurés par la couche LLM ; coût au tarif OpenRouter |
 | Performances | Indexation | durée, tokens, coût, entités/relations, taille sur disque (`metadata.json`) |
 
 Juge : `qwen/qwen3.8-27b`, température 0. Limites connues : consignes RAGAS en anglais ; 25
@@ -259,8 +266,8 @@ le graphe relie les versions FR et EN d'une même entité et des passages de doc
 
 Limites : corpus petit et 25 questions (écarts peu significatifs) ; un seul passage d'extraction
 (`gleaning 0`) ; doublons d'entités FR / EN détectés mais non fusionnés ; juge automatique en
-anglais ; quotas gratuits qui imposent concurrence 1 et budgets de contexte réduits ; détection
-des refus par mots-clés.
+anglais ; OpenRouter route les requêtes vers plusieurs hébergeurs du même modèle (léger
+non-déterminisme, ±1 refus d'un run à l'autre) ; détection des refus par mots-clés.
 
 ## 11. Pistes
 

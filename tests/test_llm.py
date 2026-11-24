@@ -16,8 +16,8 @@ from rag_uha.config import LLMSettings, RetrySettings
 from rag_uha.llm import LLMClient, _wait_seconds, as_lightrag_llm_func
 
 CFG = LLMSettings(
-    provider="groq",
-    base_url="https://api.groq.com/openai/v1",
+    provider="openrouter",
+    base_url="https://openrouter.ai/api/v1",
     model="test-model",
     api_key_env=None,
     max_tokens=50,

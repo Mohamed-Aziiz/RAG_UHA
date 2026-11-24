@@ -61,10 +61,10 @@ class PathsSettings(_Strict):
 class LLMSettings(_Strict):
     """Un rôle de LLM (indexing, query ou judge)."""
 
-    provider: Literal["groq", "openrouter", "ollama", "openai"] = "groq"
+    provider: Literal["openrouter", "ollama", "openai"] = "openrouter"
     base_url: str
     model: str
-    api_key_env: str | None = "GROQ_API_KEY"
+    api_key_env: str | None = "OPENROUTER_API_KEY"
     temperature: float = 0.0
     max_tokens: int = 1000
     max_concurrency: int = 1
