@@ -69,7 +69,7 @@ def test_build_and_query(settings, hash_embedder, fake_llm, monkeypatch):
     ans = pipe.answer("Comment se fait l'admission au Master Data Science ?")
     assert ans.pipeline == "rag" and ans.text == fake_llm.reply
     assert ans.sources[0] == "master-ds"
-    assert len(ans.contexts) == settings.rag.top_k
+    assert len(ans.contexts) == min(settings.rag.top_k, len(CHUNKS))
     assert ans.usage.n_calls == 1 and ans.latency_s >= ans.retrieval_latency_s
     system, prompt = fake_llm.prompts[-1]
     assert "SAME LANGUAGE" in system and "[source: master-ds]" in prompt
