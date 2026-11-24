@@ -23,3 +23,16 @@ dist/
 Thumbs.db
 .vscode/
 .idea/
+
+# Secrets (élargi)
+.env.*
+!.env.example
+.streamlit/secrets.toml
+*.key
+*.pfx
+*.p12
+
+# Archives (autres formats)
+*.7z
+*.tar.gz
+*.rar
