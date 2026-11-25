@@ -126,7 +126,30 @@ def save_figures(per_q: pd.DataFrame, main: pd.DataFrame, out_dir: Path) -> list
     out_dir.mkdir(parents=True, exist_ok=True)
     paths = []
     pipelines = [c for c in main.columns if c not in ("axe", "métrique")]
-    colors = {"rag": "#4C72B0", "graphrag": "#DD8452"}
+    colors = {"rag": "#2F6FED", "graphrag": "#F28C28"}
+    names = {"rag": "RAG classique", "graphrag": "GraphRAG"}
+
+    def base(p: str) -> str:  # « rag_v2 » -> « rag » : le suffixe du run n'apparaît pas sur les figures
+        return p.split("_")[0]
+
+    def label(p: str) -> str:
+        return names.get(base(p), p)
+
+    def color(p: str) -> str | None:
+        return colors.get(base(p))
+
+    metric_labels = {
+        "answer_correctness": "Answer correctness",
+        "answer_relevancy": "Answer relevancy",
+        "faithfulness": "Faithfulness",
+        "hit_at_k": "Hit@4",
+        "mrr": "MRR",
+    }
+    category_labels = {
+        "factual": "Factuelles",
+        "multi_hop": "Multi-sauts",
+        "inter_langues": "Inter-langues",
+    }
 
     # 1. barres : métriques de qualité (0-1)
     quality = [
@@ -139,9 +162,11 @@ def save_figures(per_q: pd.DataFrame, main: pd.DataFrame, out_dir: Path) -> list
         w = 0.8 / len(pipelines)
         for i, p in enumerate(pipelines):
             vals = [float(main.loc[k, p]) for k in quality]
-            ax.bar([x + i * w for x in range(len(quality))], vals, w, label=p, color=colors.get(p))
+            ax.bar(
+                [x + i * w for x in range(len(quality))], vals, w, label=label(p), color=color(p)
+            )
         ax.set_xticks([x + w * (len(pipelines) - 1) / 2 for x in range(len(quality))])
-        ax.set_xticklabels(quality, rotation=15)
+        ax.set_xticklabels([metric_labels.get(k, k) for k in quality])
         ax.set_ylim(0, 1)
         ax.set_title("Qualité (moyenne sur les questions)")
         ax.legend()
@@ -157,7 +182,7 @@ def save_figures(per_q: pd.DataFrame, main: pd.DataFrame, out_dir: Path) -> list
         (axes[1], "total_tokens", "Tokens LLM par question"),
     ):
         data = [per_q.loc[per_q.pipeline == p, col].dropna() for p in pipelines]
-        ax.boxplot(data, tick_labels=pipelines)
+        ax.boxplot(data, tick_labels=[label(p) for p in pipelines])
         ax.set_title(title)
     fig.tight_layout()
     paths.append(out_dir / "fig_perf.png")
@@ -174,11 +199,11 @@ def save_figures(per_q: pd.DataFrame, main: pd.DataFrame, out_dir: Path) -> list
             vals = [
                 per_q[(per_q.pipeline == p) & (per_q.category == c)][metric].mean() for c in cats
             ]
-            ax.bar([x + i * w for x in range(len(cats))], vals, w, label=p, color=colors.get(p))
+            ax.bar([x + i * w for x in range(len(cats))], vals, w, label=label(p), color=color(p))
         ax.set_xticks([x + w * (len(pipelines) - 1) / 2 for x in range(len(cats))])
-        ax.set_xticklabels(cats)
+        ax.set_xticklabels([category_labels.get(c, c) for c in cats])
         ax.set_ylim(0, 1)
-        ax.set_title(f"{metric} par type de question")
+        ax.set_title(f"{metric_labels.get(metric, metric)} par type de question")
         ax.legend()
         fig.tight_layout()
         paths.append(out_dir / "fig_by_category.png")
