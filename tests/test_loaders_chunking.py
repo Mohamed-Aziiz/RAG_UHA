@@ -104,3 +104,10 @@ def test_technical_files_are_skipped(tmp_path: Path):
     (tmp_path / "doc-fr.txt").write_text(FR, encoding="utf-8")
     (tmp_path / "_scrape_report.md").write_text("# Rapport\n\n" + FR, encoding="utf-8")
     assert [d.doc_id for d in load_documents(tmp_path)] == ["doc-fr"]
+
+
+def test_corpus_exclude(tmp_path: Path):
+    (tmp_path / "fr-formation-licence.txt").write_text(FR, encoding="utf-8")
+    (tmp_path / "fr-les-news-du-sup-t.txt").write_text(FR, encoding="utf-8")
+    docs = load_documents(tmp_path, exclude=["*les-news-du-sup*"])
+    assert [d.doc_id for d in docs] == ["fr-formation-licence"]

@@ -160,10 +160,16 @@ class EvalSettings(_Strict):
     price_per_m_tokens: dict[str, tuple[float, float]] = Field(default_factory=dict)
 
 
+class CorpusSettings(_Strict):
+    # doc_id (nom de fichier sans extension) a exclure, motifs fnmatch : ex. "*les-news-du-sup*"
+    exclude: list[str] = Field(default_factory=list)
+
+
 class Settings(_Strict):
     app: AppSettings = Field(default_factory=AppSettings)
     pipeline: Literal["rag", "graphrag"] = "rag"
     paths: PathsSettings
+    corpus: CorpusSettings = Field(default_factory=CorpusSettings)
     llm_indexing: LLMSettings
     llm_query: LLMSettings
     llm_judge: LLMSettings

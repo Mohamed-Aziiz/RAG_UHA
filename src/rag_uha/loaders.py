@@ -14,6 +14,7 @@ Usage :
 from __future__ import annotations
 
 import csv
+import fnmatch
 import logging
 import re
 from pathlib import Path
@@ -137,10 +138,13 @@ def read_documents_csv(csv_path: Path) -> dict[str, dict[str, str]]:
     }
 
 
-def load_documents(raw_dir: Path, documents_csv: Path | None = None) -> list[Document]:
+def load_documents(
+    raw_dir: Path, documents_csv: Path | None = None, exclude: list[str] | None = None
+) -> list[Document]:
     """Tous les documents du dossier, triés par nom. Les fichiers vides sont ignorés avec un avertissement."""
     overrides = read_documents_csv(documents_csv) if documents_csv else {}
     docs: list[Document] = []
+    n_excluded = 0
     for path in sorted(raw_dir.rglob("*")):
         if (
             not path.is_file()
@@ -149,6 +153,9 @@ def load_documents(raw_dir: Path, documents_csv: Path | None = None) -> list[Doc
             or path.name.startswith(("_", "."))  # fichiers techniques (_scrape_report.md…)
         ):
             continue
+        if exclude and any(fnmatch.fnmatch(path.stem, pat) for pat in exclude):
+            n_excluded += 1
+            continue
         doc = load_document(path, overrides.get(path.stem))
         if len(doc.text) < 200:
             log.warning(
@@ -156,6 +163,8 @@ def load_documents(raw_dir: Path, documents_csv: Path | None = None) -> list[Doc
             )
             continue
         docs.append(doc)
+    if n_excluded:
+        log.info("%d document(s) exclu(s) par corpus.exclude", n_excluded)
     if len({d.doc_id for d in docs}) != len(docs):
         raise ValueError(
             "Deux fichiers ont le même nom sans extension : les doc_id doivent être uniques."

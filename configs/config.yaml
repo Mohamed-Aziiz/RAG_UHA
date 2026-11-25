@@ -21,6 +21,15 @@ paths:
   questions_file: eval/questions.jsonl
   demo_cache_file: data/demo_cache.json
 
+# ---- Corpus ---------------------------------------------------------------
+corpus:
+  # Documents exclus du corpus (motifs sur le nom de fichier sans extension). Les fichiers restent
+  # dans data/raw : retirer la ligne suffit a les reintegrer (puis refaire chunks + index + graphe).
+  # 25/11 : pages « Les news du Sup' » retirees — pages de sommaire generiques remontees pour
+  # presque toutes les questions, et actualites anciennes (2022) donnant des reponses perimees.
+  exclude:
+    - "*les-news-du-sup*"
+
 # ---- LLM : trois roles, chacun avec son fournisseur et son modele ----------
 # Changer de fournisseur = changer base_url + model. Pas de bascule automatique.
 

@@ -25,13 +25,14 @@ def main() -> None:
     args = p.parse_args()
     s = load_settings(args.config)
 
-    docs = load_documents(s.paths.raw_dir, s.paths.documents_csv)
+    docs = load_documents(s.paths.raw_dir, s.paths.documents_csv, s.corpus.exclude)
     if not docs:
         raise SystemExit(f"Aucun document dans {s.paths.raw_dir}")
     chunks = build_chunks(docs, s.paths.chunks_file, s)
 
     tokens_per_doc = {d.doc_id: count_tokens(d.text) for d in docs}
     stats = {
+        "excluded_patterns": s.corpus.exclude,
         "n_documents": len(docs),
         "n_chunks": len(chunks),
         "total_tokens": sum(tokens_per_doc.values()),

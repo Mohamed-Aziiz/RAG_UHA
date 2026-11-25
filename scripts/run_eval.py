@@ -40,7 +40,8 @@ def main() -> None:
         help="pause entre questions (s), utile en offre gratuite",
     )
     p.add_argument(
-        "--questions", default=None,
+        "--questions",
+        default=None,
         help="fichier de questions (défaut : paths.questions_file ; ex. eval/questions_dev.jsonl)",
     )
     p.add_argument("--check", action="store_true")
