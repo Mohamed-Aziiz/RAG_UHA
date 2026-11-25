@@ -108,7 +108,7 @@ rag:
 
 # ---- GraphRAG -------------------------------------------------------------
 graphrag:
-  mode: hybrid                     # local | global | hybrid | mix
+  mode: mix                        # local | global | hybrid | mix — choisi sur la validation (25/11) : mix > hybrid
   generic_keyword_share: 0.5       # mot-cle bas niveau present dans >= 50 % des passages (ex. « UHA »)
                                    # -> passe en haut niveau : ne sert plus a chercher les entites. 0 = off
   top_k: 20

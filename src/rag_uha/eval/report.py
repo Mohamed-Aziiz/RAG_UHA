@@ -26,7 +26,7 @@ LABELS = {
     "retrieval_latency_median_s": ("Performances", "Latence de recherche médiane (s) ↓"),
     "tokens_mean": ("Performances", "Tokens LLM par question ↓"),
     "calls_mean": ("Performances", "Appels LLM par question ↓"),
-    "cost_usd_per_question": ("Performances", "Coût estimé par question ($) ↓"),
+    "cost_usd_per_1000_questions": ("Performances", "Coût estimé pour 1 000 questions ($) ↓"),
 }
 
 
@@ -53,6 +53,7 @@ def build_tables(
         for (name, val), g in per_q.groupby(["pipeline", col], sort=False):
             rows[(name, val)] = aggregate(g)
         t = pd.DataFrame(rows).T
+        t.index.names = ["pipeline", col]
         keep = [
             c
             for c in (

@@ -102,6 +102,7 @@ def aggregate(df: pd.DataFrame) -> pd.Series:
         "prompt_tokens_mean": df["prompt_tokens"].mean(),
         "calls_mean": df["n_calls"].mean(),
         "cost_usd_per_question": df["cost_usd"].mean(),
+        "cost_usd_per_1000_questions": 1000 * df["cost_usd"].mean(),
         "cost_usd_total": df["cost_usd"].sum(),
     }
     # Scores RAGAS : moyenne sur les questions REPONDABLES seulement. Sur une question hors corpus,

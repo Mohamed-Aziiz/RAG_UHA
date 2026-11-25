@@ -123,7 +123,7 @@ def test_build_graph_and_query(settings, hash_embedder, monkeypatch, tmp_path):
     ans = pipe.answer("Où se trouve la FST ?")
     assert ans.pipeline == "graphrag" and ans.text.startswith("Réponse factice")
     assert ans.usage.n_calls >= 2  # mots-clés + réponse
-    assert ans.extra["mode"] == "hybrid" and "entities" in ans.extra
+    assert ans.extra["mode"] == settings.graphrag.mode and "entities" in ans.extra
     assert ans.extra["keywords_reequilibrage"][
         "ll_brut"
     ]  # le chemin du correctif a bien été emprunté
