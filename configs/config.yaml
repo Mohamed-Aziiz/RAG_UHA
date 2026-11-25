@@ -57,7 +57,7 @@ llm_query:                         # generation des reponses, RAG ET GraphRAG
   model: openai/gpt-oss-120b
   api_key_env: OPENROUTER_API_KEY
   temperature: 0.0
-  max_tokens: 1500                  # parametre gele : des reponses plus longues font baisser answer_correctness
+  max_tokens: 1500                 # v2 : 700 -> 1500 (gpt-oss compte son raisonnement dans ce budget) ; v1 : 700
   max_concurrency: 5
   extra: { reasoning_effort: low }
 
@@ -131,7 +131,7 @@ generation:
 
 # ---- Evaluation -----------------------------------------------------------
 eval:
-  k: 8                             # Hit@k, MRR au niveau du document
+  k: 4                             # Hit@k au niveau du document ; = rag.top_k (le RAG ne renvoie que 4 passages, k > 4 avantagerait le GraphRAG)
   ragas_metrics: [faithfulness, answer_relevancy, answer_correctness]
   ragas_optional: [context_precision]
   price_per_m_tokens:              # tarifs OpenRouter [entree, sortie] en $ par million de tokens
