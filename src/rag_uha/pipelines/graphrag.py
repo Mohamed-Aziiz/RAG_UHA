@@ -20,7 +20,7 @@ from rag_uha.config import Settings
 from rag_uha.embeddings import get_embedder
 from rag_uha.indexing.graph_index import init_lightrag, make_lightrag
 from rag_uha.llm import LLMClient, get_llm
-from rag_uha.prompts import ANSWER_SYSTEM, answer_prompt, format_context
+from rag_uha.prompts import ANSWER_SYSTEM, PROMPT_VERSION, answer_prompt, format_context
 from rag_uha.types import Answer, Chunk, RetrievedChunk
 
 _LOOP: asyncio.AbstractEventLoop | None = None
@@ -170,6 +170,7 @@ class GraphRAGPipeline:
             extra={
                 "mode": mode or self.mode,
                 "model": self.llm.model,
+                "prompt": PROMPT_VERSION,
                 "entities": [
                     {"name": e["entity_name"], "type": e.get("entity_type")}
                     for e in data.get("entities", [])

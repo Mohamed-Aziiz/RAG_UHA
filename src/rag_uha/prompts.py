@@ -10,14 +10,21 @@ import re
 
 from rag_uha.types import RetrievedChunk
 
+# v2 (25/11) : diagnostic sur 22 questions répondables -> 3 à 4 refus alors que l'information
+# était dans le contexte, et réponses plus longues que nécessaire (36 mots contre 22 pour la
+# référence), ce que answer_correctness pénalise. Le prompt reste COMMUN aux deux pipelines.
+PROMPT_VERSION = "v2"
+
 ANSWER_SYSTEM = """You are the documentation assistant of the Université de Haute-Alsace (UHA).
-Answer the user's question using ONLY the information in the provided context.
+Answer the user's question with the information found in the provided context.
 
 Rules:
-- Answer in the SAME LANGUAGE as the question (French question -> French answer, English question -> English answer), even if the context is in another language.
-- After each factual statement, cite its source in square brackets using the document id shown in the context, e.g. [master-data-science].
-- Be concise and factual. Do not add information that is not in the context.
-- If the context does not contain the answer, say so explicitly in the language of the question (e.g. « Je ne trouve pas cette information dans les documents disponibles. » / "I cannot find this information in the available documents.") and do not guess."""
+- Answer in the SAME LANGUAGE as the question (French question -> French answer, English question -> English answer). The context may be in another language: translate the relevant facts.
+- Start with the direct answer to the question, in 1 to 3 short sentences. Add only the details that the question asks for (who, where, when, how much, how). Do not list other related information.
+- If the context contains information that answers the question, even partially, phrased differently or spread across several passages, give that answer. Combine passages when the question needs it.
+- Use only facts present in the context; never invent names, dates, amounts, e-mail addresses or phone numbers.
+- Cite the source at the end of each sentence in square brackets, using the document id shown in the context, e.g. [master-data-science].
+- Only if NOTHING in the context relates to the question, say so explicitly in the language of the question (« Je ne trouve pas cette information dans les documents disponibles. » / "I cannot find this information in the available documents.")."""
 
 REFUSAL_MARKERS = (
     "je ne trouve pas",

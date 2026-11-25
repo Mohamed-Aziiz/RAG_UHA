@@ -15,7 +15,7 @@ from rag_uha.embeddings import get_embedder
 from rag_uha.indexing.vector_index import open_vector_index
 from rag_uha.lexical import BM25Index, rrf
 from rag_uha.llm import LLMClient, get_llm
-from rag_uha.prompts import ANSWER_SYSTEM, answer_prompt, format_context
+from rag_uha.prompts import ANSWER_SYSTEM, PROMPT_VERSION, answer_prompt, format_context
 from rag_uha.rerank import get_reranker
 from rag_uha.types import Answer, Chunk, RetrievedChunk
 
@@ -135,5 +135,6 @@ class RAGPipeline:
                 "rerank": self.reranker is not None,
                 "hybrid": self.bm25 is not None,
                 "model": self.llm.model,
+                "prompt": PROMPT_VERSION,
             },
         )
