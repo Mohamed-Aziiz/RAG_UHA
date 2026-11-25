@@ -133,3 +133,27 @@ def test_ragas_means_exclude_out_of_corpus():
         }
     )
     assert aggregate(df)["answer_relevancy"] == 0.7
+
+
+def test_faithfulness_ignores_refusals():
+    import pandas as pd
+
+    df = pd.DataFrame(
+        {
+            "answerable": [True, True],
+            "refused": [False, True],
+            "hit_at_k": [1.0, 1.0],
+            "mrr": [1.0, 1.0],
+            "doc_recall_at_k": [1.0, 1.0],
+            "correct_refusal": [False, False],
+            "false_refusal": [False, True],
+            "latency_s": [1, 1],
+            "retrieval_latency_s": [0, 0],
+            "total_tokens": [1, 1],
+            "prompt_tokens": [1, 1],
+            "n_calls": [1, 1],
+            "cost_usd": [0, 0],
+            "faithfulness": [0.9, 0.0],
+        }
+    )
+    assert aggregate(df)["faithfulness"] == 0.9

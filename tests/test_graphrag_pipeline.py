@@ -124,7 +124,9 @@ def test_build_graph_and_query(settings, hash_embedder, monkeypatch, tmp_path):
     assert ans.pipeline == "graphrag" and ans.text.startswith("Réponse factice")
     assert ans.usage.n_calls >= 2  # mots-clés + réponse
     assert ans.extra["mode"] == "hybrid" and "entities" in ans.extra
-    assert ans.extra["keywords_reequilibrage"]["ll_brut"]  # le chemin du correctif a bien été emprunté
+    assert ans.extra["keywords_reequilibrage"][
+        "ll_brut"
+    ]  # le chemin du correctif a bien été emprunté
     assert all("::" in rc.chunk.id for rc in ans.contexts)
     assert set(ans.sources) <= {"master-ds", "fst"}
     system, prompt = llm.prompts[-1]

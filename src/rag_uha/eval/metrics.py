@@ -110,4 +110,9 @@ def aggregate(df: pd.DataFrame) -> pd.Series:
     for col in ("faithfulness", "answer_relevancy", "answer_correctness", "context_precision"):
         if col in df.columns:
             out[col] = ans[col].mean()
+    # Fidelite : mesure les hallucinations, donc seulement sur les reponses qui AFFIRMENT quelque
+    # chose. Un refus n'a aucune affirmation a verifier : RAGAS lui donne 0 ou 1 au hasard
+    # (constate sur la validation : R01 -> 0,0, R10 -> 1,0). Les refus sont comptes a part.
+    if "faithfulness" in df.columns:
+        out["faithfulness"] = ans.loc[~ans["refused"], "faithfulness"].mean()
     return pd.Series(out)
