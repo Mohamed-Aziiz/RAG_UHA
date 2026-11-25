@@ -37,10 +37,16 @@ règlements et procédures, vie étudiante. Les fichiers sont conservés dans le
 (`.html`, `.pdf`, `.md`, `.txt`) dans `data/raw/`, avec un fichier `documents.csv`
 (`doc_id,title,source,lang`) qui garde l'URL d'origine de chaque document.
 
-**Volume.** 162 documents collectés : **157 en français et 5 en anglais**, pages d'actualités comprises.
-Après exclusion de ces pages, il reste **108 chunks**. Le corpus est très majoritairement
-francophone : les questions en anglais et les questions inter-langues reposent sur les 5 pages
-anglaises du site (`en-education-and-training-*`). Le corpus est volontairement petit : il est dimensionné pour que
+**Volume** (`data/chunks/stats.json`). 162 documents ont été collectés (157 FR, 5 EN). Après
+exclusion des 100 pages d'actualités, il reste **62 documents** :
+- **57 en français et 5 en anglais** ;
+- 56 pages web converties en Markdown et 6 PDF ;
+- **86 499 tokens**, découpés en **108 chunks** (102 FR, 6 EN).
+
+Trois PDF pèsent lourd : le rapport d'activité DémoUHA (14 chunks), le livret de rentrée (11) et la
+plaquette de l'offre de formation (9). Le corpus est très majoritairement francophone : les
+questions en anglais et inter-langues reposent sur les 5 pages anglaises du site
+(`en-education-and-training-*`). Le corpus est volontairement petit : il est dimensionné pour que
 l'indexation du graphe (le poste le plus coûteux, ≈ 4 900 tokens de LLM par chunk mesurés) reste
 rapide et peu chère.
 
@@ -324,8 +330,55 @@ Résultats principaux : **jeu v2** (25 questions), `eval/results/results.md`.
 
 ### Statistiques du graphe
 
-⟨`build_graph.py --stats` : entités par type, composantes connexes, nombre de paires d'entités
-FR/EN probablement en double (similarité > 0,9), capture pyvis⟩
+Sortie de `build_graph.py --stats` (graphe v2, construit sur les 108 chunks).
+
+| | Valeur |
+| --- | --- |
+| Entités / relations | 1 129 / 1 110 |
+| Degré moyen | ≈ 2 relations par entité |
+| Composantes connexes | 196 |
+| Entité la plus connectée | « Université de Haute-Alsace (UHA) » : 240 relations |
+| Suivantes | DémoUHA (67), Learning Center (38), Campus des métiers agroalimentaire (31), FST (17) |
+
+| Type d'entité | Nombre | | Type d'entité | Nombre |
+| --- | --- | --- | --- | --- |
+| formation | 231 | | personne | 75 |
+| organisation | 200 | | composante | 64 |
+| other | 170 | | diplome | 49 |
+| service | 114 | | date | 45 |
+| lieu | 107 | | procedure | 44 |
+| cours / laboratoire | 11 / 10 | | UNKNOWN | 9 |
+
+**Lecture.**
+- **Graphe peu dense et en étoile.** Il y a presque autant de relations que d'entités, et 196
+  composantes séparées. L'entité UHA porte à elle seule 240 relations, soit environ une sur cinq.
+  C'est cohérent avec le rééquilibrage des mots-clés (§3) : sans lui, « UHA » attirait la recherche
+  vers des pages génériques. Le deuxième nœud, DémoUHA, vient d'un seul rapport de 14 chunks.
+- **Types.** 84 % des entités reçoivent un type UHA ; 179 (16 %) restent en `other` ou `UNKNOWN`.
+
+**Doublons.** 112 paires d'entités de même type ont une similarité ≥ 0,9. Les 40 premières se
+répartissent ainsi :
+
+| Nature | Paires | Exemples |
+| --- | --- | --- |
+| Variantes d'écriture d'une même entité | 23 | tiret insécable (« Haute‑Alsace » / « Haute-Alsace »), accent manquant (« Universite »), faute (« Haute-Alsasse »), majuscules, apostrophe perdue (« dEnseignants », « lEurope ») |
+| Changements de nom réels | 6 | FLSH avec ou sans « langues », ENSCMu avec ou sans « et de Matériaux », SSE |
+| Paires FR / EN | 8 | « Illberg Campus » / « Campus Illberg », « 1 July 2026 » / « 1er juillet 2026 », « Eucor – The European Campus » / « Eucor – Le Campus européen » |
+| Entités distinctes (faux positifs) | 3 | « UHA 4.0.1 » / « UHA 4.0.2 », deux numéros de rue différents |
+
+Ce qu'on en retient :
+- **Dispersion des entités.** L'UHA existe sous 5 noms et la FLSH sous 4. Les relations d'une même
+  entité sont donc dispersées entre plusieurs nœuds, et une recherche qui touche l'un d'eux manque
+  les relations des autres.
+- **Cause principale.** Ce ne sont pas les paires FR / EN, peu nombreuses parce que le corpus ne
+  compte que 5 documents anglais. Ce sont les variantes d'écriture produites par le LLM
+  d'extraction.
+- **Ce qu'il faudrait faire.** Une normalisation des noms avant fusion (Unicode NFKC, tirets,
+  apostrophes, accents) en supprimerait la plupart sans appel de LLM. La fusion automatique au seuil
+  0,9 n'est pas sûre : 3 faux positifs sur 40.
+- Les doublons sont détectés mais **non fusionnés** : le graphe évalué les contient.
+
+Le sous-graphe utilisé pour chaque réponse est affiché dans la démo (onglet GraphRAG, rendu pyvis).
 
 ### Exemples commentés (v2)
 
@@ -422,11 +475,12 @@ similarité ne trouve (n07). Il refuse aussi moins à tort. Ce gain se paie par 
   - Notes instables sur certaines questions d'un passage à l'autre.
   - Réponses parfois mal formées (NaN, re-notées ensuite).
   - Answer correctness pénalise une réponse exacte mais plus courte que la référence (n14).
-- **Déséquilibre des langues.** 5 documents anglais sur 162 : les résultats « anglais » et
+- **Déséquilibre des langues.** 5 documents anglais sur 62 (6 chunks sur 108) : les résultats « anglais » et
   « inter-langues » portent sur très peu de sources.
 - **Construction du graphe.**
   - Un seul passage d'extraction (`gleaning 0`).
-  - Doublons d'entités FR / EN détectés mais non fusionnés.
+  - 112 paires d'entités en double détectées mais non fusionnées (surtout des variantes d'écriture).
+  - 16 % des entités sans type UHA.
   - Corpus petit (108 chunks) : le graphe relie peu de documents entre eux.
 - **Non-déterminisme.**
   - OpenRouter route les requêtes vers plusieurs hébergeurs du même modèle.
@@ -435,7 +489,8 @@ similarité ne trouve (n07). Il refuse aussi moins à tort. Ce gain se paie par 
 
 ## 11. Pistes
 
-- Fusionner les entités en double FR / EN (candidats déjà listés par `--stats`).
+- Normaliser les noms d'entités avant fusion (Unicode, tirets, apostrophes, accents), puis fusionner
+  les doublons restants après vérification (`duplicates.json`, 112 paires).
 - Limiter le contexte du GraphRAG (moins de passages, `max_total_tokens` plus bas), pour tester
   l'hypothèse de dilution sur la validation.
 - Reranker (`bge-reranker`, déjà prévu dans la configuration) pour les deux pipelines.
