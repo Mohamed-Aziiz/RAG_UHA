@@ -11,8 +11,6 @@ données et comparées expérimentalement :
 - un **GraphRAG** (LightRAG, graphe de connaissances NetworkX), qui structure les documents en
   entités et relations avant la recherche.
 
-<!-- Les blocs marqués ⟨à compléter⟩ sont remplis à partir des résultats réels (voir §7). -->
-
 ## 1. Description et objectifs
 
 Le sujet initial était un assistant RAG sur les documents de l'UHA. L'encadrant a demandé
