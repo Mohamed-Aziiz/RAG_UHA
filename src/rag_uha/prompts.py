@@ -167,6 +167,11 @@ def answer_prompt(question: str, context_block: str) -> str:
 (Write your answer in {langue}, whatever the language of the context.)"""
 
 
+def clean_answer(text: str) -> str:
+    """Normalise les citations : gpt-oss cite parfois avec ses crochets natifs 【…】 au lieu de […]."""
+    return text.replace("【", "[").replace("】", "]").strip()
+
+
 def is_refusal(text: str) -> bool:
     t = text.lower()
     return any(m in t for m in REFUSAL_MARKERS)

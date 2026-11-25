@@ -21,7 +21,13 @@ from rag_uha.config import Settings
 from rag_uha.embeddings import get_embedder
 from rag_uha.indexing.graph_index import init_lightrag, make_lightrag
 from rag_uha.llm import LLMClient, get_llm
-from rag_uha.prompts import ANSWER_SYSTEM, PROMPT_VERSION, answer_prompt, format_context
+from rag_uha.prompts import (
+    ANSWER_SYSTEM,
+    PROMPT_VERSION,
+    answer_prompt,
+    clean_answer,
+    format_context,
+)
 from rag_uha.types import Answer, Chunk, RetrievedChunk
 
 _LOOP: asyncio.AbstractEventLoop | None = None
@@ -197,7 +203,9 @@ class GraphRAGPipeline:
         context_block = graph_context
         if contexts:
             context_block += "\n\nSource passages:\n" + format_context(contexts)
-        text = self.llm.complete(answer_prompt(question, context_block), system=ANSWER_SYSTEM)
+        text = clean_answer(
+            self.llm.complete(answer_prompt(question, context_block), system=ANSWER_SYSTEM)
+        )
         usage = kw_usage + self.llm.reset_usage()
 
         sources = list(dict.fromkeys(rc.chunk.doc_id for rc in contexts))

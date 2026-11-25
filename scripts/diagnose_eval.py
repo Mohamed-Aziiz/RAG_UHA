@@ -139,7 +139,7 @@ STOP = set(
         "no",
     ]
 )
-CITATION = re.compile(r"\[[^\]\n]{3,200}\]")
+CITATION = re.compile(r"[\[【][^\]】\n]{3,200}[\]】]")
 
 
 def norm(t: str) -> str:

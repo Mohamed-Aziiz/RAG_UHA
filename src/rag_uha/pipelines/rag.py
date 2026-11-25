@@ -15,7 +15,13 @@ from rag_uha.embeddings import get_embedder
 from rag_uha.indexing.vector_index import open_vector_index
 from rag_uha.lexical import BM25Index, rrf
 from rag_uha.llm import LLMClient, get_llm
-from rag_uha.prompts import ANSWER_SYSTEM, PROMPT_VERSION, answer_prompt, format_context
+from rag_uha.prompts import (
+    ANSWER_SYSTEM,
+    PROMPT_VERSION,
+    answer_prompt,
+    clean_answer,
+    format_context,
+)
 from rag_uha.rerank import get_reranker
 from rag_uha.types import Answer, Chunk, RetrievedChunk
 
@@ -115,8 +121,10 @@ class RAGPipeline:
         t_ret = time.perf_counter() - t0
 
         self.llm.reset_usage()
-        text = self.llm.complete(
-            answer_prompt(question, format_context(contexts)), system=ANSWER_SYSTEM
+        text = clean_answer(
+            self.llm.complete(
+                answer_prompt(question, format_context(contexts)), system=ANSWER_SYSTEM
+            )
         )
         usage = self.llm.reset_usage()
 
