@@ -124,6 +124,7 @@ def test_build_graph_and_query(settings, hash_embedder, monkeypatch, tmp_path):
     assert ans.pipeline == "graphrag" and ans.text.startswith("Réponse factice")
     assert ans.usage.n_calls >= 2  # mots-clés + réponse
     assert ans.extra["mode"] == "hybrid" and "entities" in ans.extra
+    assert ans.extra["keywords_reequilibrage"]["ll_brut"]  # le chemin du correctif a bien été emprunté
     assert all("::" in rc.chunk.id for rc in ans.contexts)
     assert set(ans.sources) <= {"master-ds", "fst"}
     system, prompt = llm.prompts[-1]
@@ -168,3 +169,29 @@ def test_judge_sees_graph_context():
     asyncio.run(_score_one(RunRecord(q, ans), {"faithfulness": M()}))
     assert seen["retrieved_contexts"][-1].startswith("Knowledge graph")
     assert len(seen["retrieved_contexts"]) == 2
+
+
+def test_generic_keywords_are_rebalanced(settings):
+    """Un mot-clé bas niveau présent partout passe en haut niveau ; un bas niveau vide est rempli."""
+    from rag_uha.pipelines.graphrag import _norme
+
+    p = GraphRAGPipeline.__new__(GraphRAGPipeline)
+    p.settings = settings
+    p.settings.graphrag.generic_keyword_share = 0.5
+    p._textes = [
+        _norme(t)
+        for t in (
+            "L'UHA propose des formations.",
+            "UHA : vie étudiante.",
+            "Campus de l'UHA à Mulhouse.",
+            "Master Ingénierie mathématique et data science.",
+        )
+    ]
+    p._parts = {}
+    hl, ll = p._reequilibrer(["data science", "master program"], ["UHA"])
+    assert "UHA" in hl and "UHA" not in ll
+    assert ll == ["data science", "master program"] or "data science" in ll
+    hl, ll = p._reequilibrer(["x"], ["Mulhouse", "UHA"])
+    assert ll == ["Mulhouse"] and "UHA" in hl
+    p.settings.graphrag.generic_keyword_share = 0
+    assert p._reequilibrer(["a"], ["UHA"]) == (["a"], ["UHA"])

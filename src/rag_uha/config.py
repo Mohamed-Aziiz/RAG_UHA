@@ -145,6 +145,7 @@ class GraphRAGSettings(_Strict):
     # similarite avec la question brute : un mot present partout (« uha ») suffit alors a faire
     # passer les pages generiques devant le bon passage. WEIGHT suit l'ordre des entites trouvees.
     kg_chunk_pick_method: Literal["VECTOR", "WEIGHT"] = "WEIGHT"
+    generic_keyword_share: float = 0.5  # 0 = desactive le reequilibrage des mots-cles
 
 
 class GenerationSettings(_Strict):

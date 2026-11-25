@@ -109,6 +109,8 @@ rag:
 # ---- GraphRAG -------------------------------------------------------------
 graphrag:
   mode: hybrid                     # local | global | hybrid | mix
+  generic_keyword_share: 0.5       # mot-cle bas niveau present dans >= 50 % des passages (ex. « UHA »)
+                                   # -> passe en haut niveau : ne sert plus a chercher les entites. 0 = off
   top_k: 20
   max_total_tokens: 20000        # budget du contexte envoye au LLM (OpenRouter, paiement a l'usage)
                                    # a 5000, les tableaux entites+relations saturaient le budget

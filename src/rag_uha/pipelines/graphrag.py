@@ -13,6 +13,7 @@ from __future__ import annotations
 import asyncio
 import atexit
 import time
+import unicodedata
 from typing import Any
 
 from rag_uha.chunking import load_chunks
@@ -24,6 +25,13 @@ from rag_uha.prompts import ANSWER_SYSTEM, PROMPT_VERSION, answer_prompt, format
 from rag_uha.types import Answer, Chunk, RetrievedChunk
 
 _LOOP: asyncio.AbstractEventLoop | None = None
+
+
+def _norme(t: str) -> str:
+    """Minuscules, sans accents, espaces simplifiés (pour compter un mot-clé dans les passages)."""
+    t = unicodedata.normalize("NFKD", t.lower())
+    t = "".join(c for c in t if not unicodedata.combining(c))
+    return " ".join(t.split())
 
 
 def _run(coro):
@@ -80,6 +88,10 @@ class GraphRAGPipeline:
         self.chunks_by_id: dict[str, Chunk] = {}
         if settings.paths.chunks_file.exists():
             self.chunks_by_id = {c.id: c for c in load_chunks(settings.paths.chunks_file)}
+        # Textes normalisés du corpus : sert à mesurer la part des passages contenant un mot-clé.
+        self._textes = [_norme(c.text) for c in self.chunks_by_id.values()]
+        self._parts: dict[str, float] = {}
+        self.last_keywords: dict[str, list[str]] = {}
 
     def _param(self, mode: str | None = None):
         from lightrag import QueryParam
@@ -102,8 +114,50 @@ class GraphRAGPipeline:
             )
         return RetrievedChunk(chunk=known, rank=rank)
 
+    # ---- mots-clés génériques (correctif d'Amar, 25/11) -------------------------------------
+    # LightRAG cherche les ENTITÉS avec les mots-clés « bas niveau ». Un mot présent presque
+    # partout (« UHA » : 94 % des passages) ramène l'entité la plus connectée du graphe et noie
+    # le reste. On mesure la part des passages qui contiennent chaque mot-clé ; au-delà de
+    # `generic_keyword_share`, un mot-clé bas niveau passe en haut niveau (il reste dans la
+    # recherche, mais ne sert plus à chercher les entités). Rien n'est retiré de la question, et
+    # la règle est mesurée sur le corpus, pas écrite pour un mot. C'est l'équivalent de l'IDF de
+    # BM25 côté RAG. `generic_keyword_share: 0` désactive le correctif.
+    def _part_des_passages(self, mot: str) -> float:
+        k = _norme(mot)
+        if k not in self._parts:
+            n = sum(1 for t in self._textes if k in t)
+            self._parts[k] = n / len(self._textes) if self._textes else 0.0
+        return self._parts[k]
+
+    def _reequilibrer(self, hl: list[str], ll: list[str]) -> tuple[list[str], list[str]]:
+        seuil = self.settings.graphrag.generic_keyword_share
+        if seuil <= 0 or not self._textes:
+            return hl, ll
+        generiques = [k for k in ll if self._part_des_passages(k) >= seuil]
+        ll2 = [k for k in ll if k not in generiques]
+        hl2 = list(dict.fromkeys(hl + generiques))
+        if not ll2:  # plus rien pour chercher les entités : on prend les mots-clés précis
+            ll2 = [k for k in hl if self._part_des_passages(k) < seuil]
+        return hl2, ll2
+
+    def _mots_cles(self, question: str, param) -> tuple[list[str], list[str]]:
+        """Mots-clés extraits par LightRAG lui-même (même prompt, même cache que aquery_data)."""
+        from lightrag.operate import extract_keywords_only
+
+        return _run(
+            extract_keywords_only(
+                question, param, self.rag._build_global_config(), self.rag.llm_response_cache
+            )
+        )
+
     def retrieve_data(self, question: str, mode: str | None = None) -> dict[str, Any]:
-        res = _run(self.rag.aquery_data(question, param=self._param(mode)))
+        param = self._param(mode)
+        if self.settings.graphrag.generic_keyword_share > 0 and self._textes:
+            hl, ll = self._mots_cles(question, param)
+            hl2, ll2 = self._reequilibrer(list(hl), list(ll))
+            self.last_keywords = {"hl_brut": list(hl), "ll_brut": list(ll), "hl": hl2, "ll": ll2}
+            param.hl_keywords, param.ll_keywords = hl2, ll2
+        res = _run(self.rag.aquery_data(question, param=param))
         if res.get("status") != "success":
             raise RuntimeError(f"LightRAG : {res.get('message')}")
         return res
@@ -179,6 +233,7 @@ class GraphRAGPipeline:
                     {"src": r["src_id"], "tgt": r["tgt_id"]} for r in data.get("relationships", [])
                 ],
                 "keywords": res.get("metadata", {}).get("keywords", {}),
+                "keywords_reequilibrage": dict(self.last_keywords),
                 # Texte des entites / relations reellement envoye au LLM : le juge doit le voir
                 # aussi, sinon une affirmation tiree du graphe compte comme une hallucination.
                 "graph_context": graph_context,
