@@ -1,0 +1,9 @@
+,rag,graphrag
+modèle LLM d'indexation,— (aucun),openai/gpt-oss-120b
+tokens LLM,0,531345
+appels LLM,0,142
+coût LLM estimé ($),0.0,0.0403
+durée (s),7.6,894.6
+entités,—,1129
+relations,—,1110
+taille sur disque (Mo),4.3,26.1
