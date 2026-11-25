@@ -11,6 +11,7 @@ Déroulé d'une question :
 from __future__ import annotations
 
 import asyncio
+import atexit
 import time
 from typing import Any
 
@@ -44,6 +45,24 @@ def _run(coro):
 
     nest_asyncio.apply()
     return asyncio.get_event_loop().run_until_complete(coro)
+
+
+def _shutdown_loop() -> None:
+    """A la fin du programme : annule les taches de fond de LightRAG (workers, controle de sante)
+    puis ferme la boucle. Sans cela, Python affiche « Task was destroyed but it is pending »."""
+    loop = _LOOP
+    if loop is None or loop.is_closed():
+        return
+    pending = [t for t in asyncio.all_tasks(loop) if not t.done()]
+    for t in pending:
+        t.cancel()
+    if pending:
+        loop.run_until_complete(asyncio.gather(*pending, return_exceptions=True))
+    loop.run_until_complete(loop.shutdown_asyncgens())
+    loop.close()
+
+
+atexit.register(_shutdown_loop)
 
 
 class GraphRAGPipeline:
