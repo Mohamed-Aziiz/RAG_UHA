@@ -48,7 +48,7 @@ llm_query:                         # generation des reponses, RAG ET GraphRAG
   model: openai/gpt-oss-120b
   api_key_env: OPENROUTER_API_KEY
   temperature: 0.0
-  max_tokens: 1500
+  max_tokens: 700                  # parametre gele : des reponses plus longues font baisser answer_correctness
   max_concurrency: 5
   extra: { reasoning_effort: low }
 
@@ -85,7 +85,7 @@ chunking:
 # ---- RAG classique --------------------------------------------------------
 rag:
   collection: uha_chunks
-  top_k: 6                         # passages envoyes au LLM (parametre du protocole)
+  top_k: 4                         # passages envoyes au LLM (parametre du protocole)
   rerank: false
   rerank_model: "@cf/baai/bge-reranker-base"
   rerank_candidates: 50            # candidats vectoriels avant fusion (et reranking s'il est actif)
@@ -101,7 +101,7 @@ rag:
 graphrag:
   mode: hybrid                     # local | global | hybrid | mix
   top_k: 20
-  max_total_tokens: 10000        # budget du contexte envoye au LLM (OpenRouter, paiement a l'usage)
+  max_total_tokens: 20000        # budget du contexte envoye au LLM (OpenRouter, paiement a l'usage)
                                    # a 5000, les tableaux entites+relations saturaient le budget
                                    # et LightRAG ne remontait AUCUN passage (23/25 questions)
   entity_extract_max_gleaning: 0   # 0 = un seul passage d'extraction ; 1 = plus complet (+80 % tokens)
