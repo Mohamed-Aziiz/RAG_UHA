@@ -1,45 +1,45 @@
 ## Tableau comparatif principal
 
-| axe | métrique | rag | graphrag |
+| axe | métrique | rag_v2 | graphrag_v2 |
 |---|---|---|---|
-| Pertinence | Answer relevancy (RAGAS) ↑ | 0.641 | 0.747 |
-| Pertinence | Answer correctness vs référence (RAGAS) ↑ | 0.636 | 0.677 |
-| Fiabilité | Faithfulness / fidélité aux sources (RAGAS) ↑ | 0.883 | 0.844 |
+| Pertinence | Answer relevancy (RAGAS) ↑ | 0.850 | 0.809 |
+| Pertinence | Answer correctness vs référence (RAGAS) ↑ | 0.801 | 0.725 |
+| Fiabilité | Faithfulness / fidélité aux sources (RAGAS) ↑ | 0.937 | 0.966 |
 | Fiabilité | Refus corrects sur questions hors corpus ↑ | 1.000 | 1.000 |
-| Fiabilité | Refus à tort sur questions répondables ↓ | 0.211 | 0.053 |
-| Récupération | Hit@k (niveau document) ↑ | 0.842 | 0.842 |
-| Récupération | MRR (niveau document) ↑ | 0.715 | 0.743 |
-| Récupération | Rappel des documents attendus @k ↑ | 0.754 | 0.763 |
-| Performances | Latence médiane par question (s) ↓ | 0.855 | 2.050 |
-| Performances | Latence p95 (s) ↓ | 1.616 | 2.774 |
-| Performances | Latence de recherche médiane (s) ↓ | 0.120 | 0.808 |
-| Performances | Tokens LLM par question ↓ | 3,338 | 15,797 |
+| Fiabilité | Refus à tort sur questions répondables ↓ | 0.045 | 0.000 |
+| Récupération | Hit@k (niveau document) ↑ | 0.955 | 1.000 |
+| Récupération | MRR (niveau document) ↑ | 0.769 | 0.761 |
+| Récupération | Rappel des documents attendus @k ↑ | 0.924 | 0.947 |
+| Performances | Latence médiane par question (s) ↓ | 0.900 | 1.887 |
+| Performances | Latence p95 (s) ↓ | 1.482 | 2.759 |
+| Performances | Latence de recherche médiane (s) ↓ | 0.118 | 0.892 |
+| Performances | Tokens LLM par question ↓ | 3,628 | 14,929 |
 | Performances | Appels LLM par question ↓ | 1.000 | 2.000 |
-| Performances | Coût estimé pour 1 000 questions ($) ↓ | 0.114 | 0.500 |
+| Performances | Coût estimé pour 1 000 questions ($) ↓ | 0.123 | 0.483 |
 
 
 ## Par type de question
 
 | pipeline | category | n_questions | hit_at_k | mrr | faithfulness | answer_correctness | latency_median_s | tokens_mean |
 |---|---|---|---|---|---|---|---|---|
-| rag | factual | 8.000 | 1.000 | 0.854 | 0.836 | 0.755 | 0.855 | 3,340 |
-| rag | inter_langues | 3.000 | 0.000 | 0.000 | 0.750 | 0.156 | 0.554 | 3,528 |
-| rag | multi_hop | 8.000 | 1.000 | 0.844 | 0.967 | 0.724 | 0.983 | 3,293 |
-| rag | hors_corpus | 3.000 | — | — | — | — | 0.468 | 3,263 |
-| graphrag | factual | 8.000 | 0.875 | 0.833 | 0.885 | 0.697 | 1.879 | 16,120 |
-| graphrag | inter_langues | 3.000 | 0.333 | 0.208 | 0.417 | 0.282 | 2.165 | 15,310 |
-| graphrag | multi_hop | 8.000 | 1.000 | 0.854 | 0.950 | 0.766 | 2.190 | 15,765 |
-| graphrag | hors_corpus | 3.000 | — | — | — | — | 1.391 | 15,510 |
+| rag_v2 | factual | 11 | 1.000 | 0.864 | 0.984 | 0.850 | 0.900 | 3,666 |
+| rag_v2 | multi_hop | 7.000 | 0.857 | 0.690 | 0.917 | 0.747 | 1.047 | 3,714 |
+| rag_v2 | inter_langues | 4.000 | 1.000 | 0.646 | 0.833 | 0.739 | 0.770 | 3,422 |
+| rag_v2 | hors_corpus | 3.000 | — | — | — | — | 0.514 | 3,564 |
+| graphrag_v2 | factual | 11 | 1.000 | 0.833 | 0.960 | 0.719 | 1.887 | 15,093 |
+| graphrag_v2 | multi_hop | 7.000 | 1.000 | 0.702 | 0.958 | 0.658 | 2.269 | 14,802 |
+| graphrag_v2 | inter_langues | 4.000 | 1.000 | 0.667 | 1.000 | 0.844 | 2.059 | 14,490 |
+| graphrag_v2 | hors_corpus | 3.000 | — | — | — | — | 1.356 | 15,205 |
 
 
 ## Par langue de la question
 
 | pipeline | lang | n_questions | hit_at_k | mrr | faithfulness | answer_correctness | latency_median_s | tokens_mean |
 |---|---|---|---|---|---|---|---|---|
-| rag | fr | 15 | 0.833 | 0.729 | 0.901 | 0.601 | 0.942 | 3,403 |
-| rag | en | 7.000 | 0.857 | 0.690 | 0.856 | 0.702 | 0.814 | 3,200 |
-| graphrag | fr | 15 | 0.833 | 0.747 | 0.815 | 0.694 | 2.084 | 15,813 |
-| graphrag | en | 7.000 | 0.857 | 0.738 | 0.889 | 0.645 | 1.900 | 15,764 |
+| rag_v2 | fr | 16 | 0.929 | 0.756 | 0.926 | 0.796 | 0.885 | 3,614 |
+| rag_v2 | en | 9.000 | 1.000 | 0.792 | 0.952 | 0.809 | 0.900 | 3,654 |
+| graphrag_v2 | fr | 16 | 1.000 | 0.768 | 0.967 | 0.756 | 1.868 | 15,110 |
+| graphrag_v2 | en | 9.000 | 1.000 | 0.750 | 0.964 | 0.680 | 1.924 | 14,606 |
 
 
 ## Coût d'indexation
@@ -65,63 +65,64 @@
 
 ## Exemples où les pipelines divergent (à commenter)
 
-### q01 (factual, fr) — J'ai un souci avec mon inscription, qui je contacte ?
+### n07 (multi_hop, fr) — Je veux devenir prof d'anglais : quel master préparer à l'UHA, dans quelle faculté, et quand passe-t-on le concours ?
 
-*Référence :* Le service de la scolarité : scolarite@uha.fr ou 03 89 33 66 99.
+*Référence :* Le master MEEF (Métiers de l'enseignement, de l'éducation et de la formation) spécialité Anglais, à la FLSH. Le concours de recrutement se passe pendant le M2.
 
-**rag** (correctness 0.17, sources livret-de-rentree-etudiant-uha, fr-formation-1-domaines-de-formation-diplomes-droit-economie-gestion, fr-formation-1-domaines-de-formation-diplomes-sciences-humaines-et-socia) :
-> Pour un problème d’inscription, adressez‑vous à la Direction des Études et de la Vie Universitaire (DEVU) : devu@uha.fr. [livret-de-rentree-etudiant-uha]
+**rag_v2** (correctness 0.51, sources fr-formation-1-domaines-de-formation-diplomes-masters, plaquette-offre-de-formation-uha, fr-formation-1-domaines-de-formation-diplomes-droit-economie-gestion, fr-formation-1-domaines-de-formation-diplomes-arts-lettres-et-langues) :
+> Le master à préparer est le **Master Anglais** proposé dans le domaine « Arts, lettres et civilisations », qui dépend de la **Faculté des Lettres, Langues et Sciences Humaines (FLSH)** de l’UHA[plaquette-offre-de-formation-uha].  
+Le contexte ne précise pas la date ou le moment où le concours de professeur d’anglais doit être passé. Je ne trouve pas cette information dans les documents disponibles.
 
-**graphrag** (correctness 0.82, sources livret-de-rentree-etudiant-uha, plaquette-offre-de-formation-uha, fr-formation-1-orientation-decouverte-des-formations-1-immersion-dans-un, plaquette-uha-formations-bi-trinationales-1e4600) :
-> Pour un problème d’inscription, vous devez contacter le Service de Scolarité Centrale de l’UHA à l’adresse scolarite@uha.fr (téléphone 03 89 33 66 99) [livret-de-rentree-etudiant-uha].
+**graphrag_v2** (correctness 0.86, sources fr-formation-1-domaines-de-formation-diplomes-masters, plaquette-offre-de-formation-uha, fr-formation-1-domaines-de-formation-diplomes-arts-lettres-et-langues, fr-formation-1-domaines-de-formation-diplomes-metiers-de-l-enseignement) :
+> Le master à préparer est le **Master MEEF – spécialité Anglais**, proposé par la **Faculté des Lettres, Langues et Sciences Humaines (FLSH)** de l’UHA ; le concours de recrutement des professeurs s’ouvre aux étudiants inscrits en **2ᵉ année de master (M2)** et se déroule pendant cette année [fr-formation-1-domaines-de-formation-diplomes-metiers-de-l-enseignement] .
 
-### q15 (multi_hop, fr) — Je suis sportif de haut niveau : y a-t-il des matières ouvertes de sport, et qui m'accompagne ?
+### n23 (hors_corpus, fr) — Quel est le mot de passe du Wi-Fi de l'UHA ?
 
-*Référence :* Oui, les matières ouvertes ont un domaine « Activités sportives et bien-être ». Le statut de sportif de haut niveau prévoit un suivi par les enseignants du SUAPS.
+*Référence :* Je ne sais pas : les documents citent les réseaux (eduroam et UHA) mais ne donnent aucun mot de passe.
 
-**rag** (correctness 0.09, sources fr-formation-1-accompagnement-a-la-reussite-1-matieres-ouvertes, fr-formation-1-domaines-de-formation-diplomes-droit-economie-gestion, livret-de-rentree-etudiant-uha) :
+**rag_v2** (correctness 0.55, sources fr-formation-1-accompagnement-a-la-reussite-1-numerique, fr-formation-1-orientation-decouverte-des-formations-1-accompagnement-a, livret-de-rentree-etudiant-uha, infographie-elan) :
 > Je ne trouve pas cette information dans les documents disponibles.
 
-**graphrag** (correctness 0.39, sources fr-formation-1-accompagnement-a-la-reussite-1-matieres-ouvertes, livret-de-rentree-etudiant-uha, fr-formation-1-accompagnement-a-la-reussite-1, fr-formation-1-accompagnement-a-la-reussite-1-elan-eveil-a-la-liberte-et) :
-> Oui, des matières ouvertes sont proposées dans le domaine « Activités sportives et bien‑être », accessible à tous les étudiants ; le Service Universitaire des Activités Physiques et Sportives (SUAPS) vous accompagne spécifiquement en tant que sportif de haut niveau en vous offrant un statut dédié et des aménagements (ex. : report d’examens, accès à la salle de musculation, etc.)[fr-formation-1-accompagnement-a-la-reussite-1-matieres-ouvertes][livret-de-rentree-etudiant-uha]
-
-### q21 (inter_langues, fr) — Est-ce que l'UHA a un domaine de formation sur le développement durable ?
-
-*Référence :* Oui : « Science & Sustainability » (sciences et durabilité) fait partie des cinq grands domaines de formation de l'UHA, avec Interculturality ; Law, Politics & Societal studies ; Management ; Digital studies & Innovation industries.
-
-**rag** (correctness 0.30, sources plaquette-offre-de-formation-uha) :
-> Oui, l’UHA propose des formations axées sur le développement durable, notamment dans le domaine « Sciences, Technologies, Santé » avec des parcours tels que « Risques et environnement », « Ingénierie environnementale et énergies nouvelles » et le master « Sciences et génie des matériaux » qui prépare à développer des procédés et matériaux durables [plaquette-offre-de-formation-uha::1]. De plus, le projet Mat‑Light 4.0 vise explicitement à former la nouvelle génération aux procédés et matériaux durables pour la transition énergétique et environnementale [plaquette-offre-de-formation-uha::1].
-
-**graphrag** (correctness 0.48, sources plaquette-offre-de-formation-uha, rapport-activite-demouha-2022-2026-1e4600, livret-de-rentree-etudiant-uha, fr-formation-1-facultes-iut-ecoles-d-ingenieurs-uha-business-school) :
-> Oui, l’UHA propose un domaine de formation dédié à la transition écologique et sociétale, intitulé « Sciences de la transition écologique et sociétale », qui porte sur le développement durable [plaquette-offre-de-formation-uha].
-
-### q18 (multi_hop, en) — Where can I take French classes, and does that service also offer a digital certification?
-
-*Référence :* At the Learning Center, which also supports the Pix digital certification.
-
-**rag** (correctness nan, sources en-education-and-training-fields-of-training-and-qualifications, en-education-and-training-information-and-orientation, fr-formation-1-accompagnement-a-la-reussite-1-langues-certifications-aut, plaquette-uha-formations-bi-trinationales-1e4600) :
-> You can attend face‑to‑face French Langue Étrangère (FLE) courses offered by the university’s Learning Center (ForCe) – these classes are reserved for foreign students[fr-formation-1-accompagnement-a-la-reussite-1-langues-certifications-aut].  
-The Learning Center also provides the Pix digital certification, which evaluates and attests to students’ digital skills[fr-formation-1-accompagnement-a-la-reussite-1-langues-certifications-aut].
-
-**graphrag** (correctness 0.92, sources en-education-and-training-fields-of-training-and-qualifications, rapport-activite-demouha-2022-2026-1e4600, fr-formation-1-accompagnement-a-la-reussite-1-langues-certifications-aut, plaquette-uha-formations-bi-trinationales-1e4600) :
-> You can take French‑as‑a‑foreign‑language courses at the University of Haute‑Alsace’s Learning Center, which organizes these language courses for non‑native speakers [en-education-and-training-fields-of-training-and-qualifications]. The same Learning Center also provides digital certification (the Pix certification) for students [fr-formation-1-accompagnement-a-la-reussite-1-pedagogie-universitaire-in].
-
-### q19 (multi_hop, en) — How close is UHA to the Swiss border, and can I take courses at other universities nearby?
-
-*Référence :* UHA is at the heart of the Three Frontiers region, right on Basel's doorstep. Yes: through Eucor – The European Campus (5 universities within about 80 km), enrolled students can take courses at the other member universities and have them validated in their own programme.
-
-**rag** (correctness 0.67, sources plaquette-offre-de-formation-uha, en-education-and-training-international-education, en-education-and-training-information-and-orientation, fr-formation-1-accompagnement-a-la-reussite-1-mobilites-internationales) :
-> UHA is situated in the heart of the Upper Rhine region, essentially on Basel’s doorstep, so it lies right next to the Swiss border[en-education-and-training-international-education]. Through the Eucor – The European Campus network, any UHA student can enrol in courses at the other member universities within about 80 km and have those credits recognised by UHA[en-education-and-training-international-education].
-
-**graphrag** (correctness nan, sources plaquette-offre-de-formation-uha, en-education-and-training-international-education, fr-formation-1-accompagnement-a-la-reussite-1-mobilites-internationales, livret-de-rentree-etudiant-uha) :
-> UHA is located right on the doorstep of Basel, giving it immediate proximity to the Swiss border[en-education-and-training-international-education]. Through its membership in the Eucor – The European Campus network, any UHA student can enrol in courses at partner universities such as the University of Basel, Fribourg or Karlsruhe and have the credits recognised by UHA[en-education-and-training-international-education].
-
-### q20 (inter_langues, fr) — Est-ce que la plupart des formations sont à temps plein, avec un stage ensuite ?
-
-*Référence :* Oui : la majorité des formations de l'UHA se suivent à temps plein à l'université, puis sont complétées par une période de stage en entreprise. Certaines formations sont aussi proposées en apprentissage.
-
-**rag** (correctness 0.08, sources fr-formation-1-formation-tout-au-long-de-la-vie, fr-formation-1-domaines-de-formation-diplomes-licences, fr-formation-1-formations-en-alternance-apprentissage, fr-formation-1) :
+**graphrag_v2** (correctness 0.67, sources fr-formation-1-accompagnement-a-la-reussite-1-numerique, livret-de-rentree-etudiant-uha, fr-formation-1-accompagnement-a-la-reussite-1-langues-certifications-aut, infographie-elan) :
 > Je ne trouve pas cette information dans les documents disponibles.
 
-**graphrag** (correctness nan, sources fr-formation-1-formation-tout-au-long-de-la-vie, fr-formation-1-domaines-de-formation-diplomes-masters, fr-formation-1-formations-en-alternance-apprentissage, fr-formation-1-domaines-de-formation-diplomes-diplomes-d-ingenieurs) :
-> Oui, la plupart des formations sont dispensées à temps plein et comprennent ensuite un stage long obligatoire — notamment les masters, qui intègrent généralement une période de stage long dans leur cursus [fr-formation-1-domaines-de-formation-diplomes-masters] ; de même, le diplôme d’ingénieur prévoit un stage long de fin d’études en troisième année [fr-formation-1-domaines-de-formation-diplomes-diplomes-d-ingenieurs].
+### n12 (factual, fr) — Depuis quand l'IUT de Mulhouse propose-t-il des formations trinationales, et avec quels partenaires ?
+
+*Référence :* Depuis 1997, en partenariat avec la Berufsakademie de Lörrach et la Fachhochschule Beider Basel.
+
+**rag_v2** (correctness 0.92, sources plaquette-uha-formations-bi-trinationales-1e4600, fr-formation-1-facultes-iut-ecoles-d-ingenieurs-iutm-institut-universita, fr-formation-1-formations-bi-trinationales-transfrontalieres) :
+> L’IUT de Mulhouse propose des formations trinationales depuis 1997, en partenariat avec la Berufsakademie de Lörrach (Allemagne) et la Fachhochschule Beider Basel (Suisse)[fr-formation-1-facultes-iut-ecoles-d-ingenieurs-iutm-institut-universita].
+
+**graphrag_v2** (correctness 0.92, sources plaquette-uha-formations-bi-trinationales-1e4600, fr-formation-1-accompagnement-a-la-reussite-1-elan-eveil-a-la-liberte-et, fr-formation-1-facultes-iut-ecoles-d-ingenieurs-iutm-institut-universita, fr-formation-1-accompagnement-a-la-reussite-1-learning-center) :
+> L’IUT de Mulhouse propose des formations trinationales depuis 1997, en partenariat avec la Berufsakademie de Lörrach (Allemagne) et la Fachhochschule Beider Basel (Suisse)[fr-formation-1-facultes-iut-ecoles-d-ingenieurs-iutm-institut-universita::0].
+
+### n10 (multi_hop, fr) — Si je pars un semestre dans une université partenaire, est-ce que mes notes comptent à l'UHA, et qui je contacte ?
+
+*Référence :* Oui : les résultats obtenus dans l'université partenaire sont reconnus par l'UHA, transcrits en notes françaises, et les crédits ECTS sont attribués automatiquement. Contact : international@uha.fr.
+
+**rag_v2** (correctness 0.83, sources fr-formation-1-accompagnement-a-la-reussite-1-mobilites-internationales, fr-formation-1-domaines-de-formation-diplomes-sciences-humaines-et-socia, livret-de-rentree-etudiant-uha) :
+> Oui, les résultats d’examens obtenus dans l’université partenaire sont reconnus par l’UHA, transcrits en notes françaises et les crédits ECTS correspondants sont automatiquement attribués ; vous pouvez donc valider votre semestre à l’étranger [fr-formation-1-accompagnement-a-la-reussite-1-mobilites-internationales].  
+Pour toute question, il faut contacter le service international à l’adresse international@uha.fr [fr-formation-1-accompagnement-a-la-reussite-1-mobilites-internationales].
+
+**graphrag_v2** (correctness nan, sources fr-formation-1-accompagnement-a-la-reussite-1-mobilites-internationales, infographie-elan, livret-de-rentree-etudiant-uha, fr-formation-1-facultes-iut-ecoles-d-ingenieurs-iutc-institut-universita) :
+> Oui, les notes obtenues à l’étranger sont reconnues, transcrites en notes françaises et les crédits ECTS sont attribués par l’UHA ; vous pouvez vous renseigner auprès du service international à l’adresse international@uha.fr [fr-formation-1-accompagnement-a-la-reussite-1-mobilites-internationales].
+
+### n19 (inter_langues, fr) — Quels sont les départements de la FSESJ ?
+
+*Référence :* Cinq départements : Droit ; Politique, économie et société ; Hautes études de management ; Histoire et patrimoine ; Information / communication.
+
+**rag_v2** (correctness nan, sources fr-formation-1-facultes-iut-ecoles-d-ingenieurs-fsesj-faculte-des-scienc, fr-formation-1-facultes-iut-ecoles-d-ingenieurs-flsh-faculte-des-lettres, en-education-and-training-university-components, fr-formation-1-facultes-iut-ecoles-d-ingenieurs) :
+> Les départements de la FSESJ sont : Droit ; Politique, Économie et Société ; Hautes Études de Management ; Histoire et Patrimoine ; et Information‑Communication [en-education-and-training-university-components].
+
+**graphrag_v2** (correctness 0.96, sources fr-formation-1-facultes-iut-ecoles-d-ingenieurs-fsesj-faculte-des-scienc, livret-de-rentree-etudiant-uha, en-education-and-training-university-components, fr-formation-1-facultes-iut-ecoles-d-ingenieurs-iutc-institut-universita) :
+> La FSESJ comprend cinq départements : le département de droit, le département de politique, économie et société, le département d’études supérieures de management, le département d’histoire et patrimoine, et le département d’information/communication [en-education-and-training-university-components].
+
+### n22 (inter_langues, en) — How long does the RobotHub Académie project last, and how is it funded?
+
+*Référence :* 38 months, from April 2023 to September 2026. It is co-funded by European INTERREG funds, with a total budget of 3.6 million euros, including 1.5 million from the ERDF (FEDER).
+
+**rag_v2** (correctness nan, sources fr-formation-1-grands-projets-de-formation-robothub-academie, en-education-and-training-information-and-orientation, en-education-and-training-university-components, rapport-activite-demouha-2022-2026-1e4600) :
+> The RobotHub Académie project runs for 38 months, from April 2023 to September 2026 [fr-formation-1-grands-projets-de-formation-robothub-academie]. It is co‑financed by European INTERREG funds with a total budget of €3.6 million, of which €1.5 million comes from the FEDER programme [fr-formation-1-grands-projets-de-formation-robothub-academie].
+
+**graphrag_v2** (correctness 0.94, sources fr-formation-1-grands-projets-de-formation-robothub-academie, rapport-activite-demouha-2022-2026-1e4600, fr-formation-1-accompagnement-a-la-reussite-1, fr-formation-1-grands-projets-de-formation-demouha) :
+> The RobotHub Académie project runs for 38 months, from April 2023 until September 2026 [fr-formation-1-grands-projets-de-formation-robothub-academie]. It is co‑financed by the European INTERREG programme with a total budget of €3.6 million, of which €1.5 million comes from the FEDER fund [fr-formation-1-grands-projets-de-formation-robothub-academie].

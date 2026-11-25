@@ -1,15 +1,15 @@
-,axe,métrique,rag,graphrag
-answer_relevancy,Pertinence,Answer relevancy (RAGAS) ↑,0.6408486889494425,0.7467279935172918
-answer_correctness,Pertinence,Answer correctness vs référence (RAGAS) ↑,0.6363202472887872,0.6769346422720123
-faithfulness,Fiabilité,Faithfulness / fidélité aux sources (RAGAS) ↑,0.8826984126984126,0.8444444444444444
+,axe,métrique,rag_v2,graphrag_v2
+answer_relevancy,Pertinence,Answer relevancy (RAGAS) ↑,0.8504764758438853,0.8092297593524573
+answer_correctness,Pertinence,Answer correctness vs référence (RAGAS) ↑,0.8006048979406344,0.7254139435190645
+faithfulness,Fiabilité,Faithfulness / fidélité aux sources (RAGAS) ↑,0.9365079365079365,0.9659565580618213
 correct_refusal_rate,Fiabilité,Refus corrects sur questions hors corpus ↑,1.0,1.0
-false_refusal_rate,Fiabilité,Refus à tort sur questions répondables ↓,0.21052631578947367,0.05263157894736842
-hit_at_k,Récupération,Hit@k (niveau document) ↑,0.8421052631578947,0.8421052631578947
-mrr,Récupération,MRR (niveau document) ↑,0.7149122807017543,0.743421052631579
-doc_recall_at_k,Récupération,Rappel des documents attendus @k ↑,0.7543859649122807,0.7631578947368421
-latency_median_s,Performances,Latence médiane par question (s) ↓,0.8553029000177048,2.049884599982761
-latency_p95_s,Performances,Latence p95 (s) ↓,1.6159689449123107,2.7742220550018826
-retrieval_latency_median_s,Performances,Latence de recherche médiane (s) ↓,0.11999135004589334,0.8078793999738991
-tokens_mean,Performances,Tokens LLM par question ↓,3338.2272727272725,15797.272727272728
+false_refusal_rate,Fiabilité,Refus à tort sur questions répondables ↓,0.045454545454545456,0.0
+hit_at_k,Récupération,Hit@k (niveau document) ↑,0.9545454545454546,1.0
+mrr,Récupération,MRR (niveau document) ↑,0.768939393939394,0.7613636363636364
+doc_recall_at_k,Récupération,Rappel des documents attendus @k ↑,0.9242424242424242,0.9469696969696969
+latency_median_s,Performances,Latence médiane par question (s) ↓,0.8999197999946773,1.8868986000306904
+latency_p95_s,Performances,Latence p95 (s) ↓,1.482417400018312,2.7586925800191238
+retrieval_latency_median_s,Performances,Latence de recherche médiane (s) ↓,0.11782799998763949,0.892195799970068
+tokens_mean,Performances,Tokens LLM par question ↓,3628.24,14928.52
 calls_mean,Performances,Appels LLM par question ↓,1.0,2.0
-cost_usd_per_1000_questions,Performances,Coût estimé pour 1 000 questions ($) ↓,0.11354863636363634,0.5000727272727272
+cost_usd_per_1000_questions,Performances,Coût estimé pour 1 000 questions ($) ↓,0.1230456,0.48314999999999997
