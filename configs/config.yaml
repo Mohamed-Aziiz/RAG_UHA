@@ -69,7 +69,7 @@ llm_judge:                         # juge RAGAS
   temperature: 0.0
   max_tokens: 4000                 # reponses longues du GraphRAG : evite les NaN par troncature
   max_concurrency: 10
-  extra: { reasoning: { enabled: false } }  # sans reflexion : sortie a 1,50 $/M, et evite les NaN
+  extra: { reasoning: { enabled: false }, provider: { require_parameters: true } }  # sans reflexion ; seulement les hebergeurs qui gerent les sorties JSON structurees (sinon NaN)
 
 retry:                             # gestion des 429 / 413 / 5xx, commune aux 3 roles
   max_attempts: 8
