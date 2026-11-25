@@ -37,8 +37,10 @@ règlements et procédures, vie étudiante. Les fichiers sont conservés dans le
 (`.html`, `.pdf`, `.md`, `.txt`) dans `data/raw/`, avec un fichier `documents.csv`
 (`doc_id,title,source,lang`) qui garde l'URL d'origine de chaque document.
 
-**Volume.** **108 chunks** après nettoyage ; ⟨nombre de documents FR / EN et de tokens à reprendre
-de `data/chunks/stats.json`⟩. Le corpus est volontairement petit : il est dimensionné pour que
+**Volume.** 162 documents collectés : **157 en français et 5 en anglais**, pages d'actualités comprises.
+Après exclusion de ces pages, il reste **108 chunks**. Le corpus est très majoritairement
+francophone : les questions en anglais et les questions inter-langues reposent sur les 5 pages
+anglaises du site (`en-education-and-training-*`). Le corpus est volontairement petit : il est dimensionné pour que
 l'indexation du graphe (le poste le plus coûteux, ≈ 4 900 tokens de LLM par chunk mesurés) reste
 rapide et peu chère.
 
@@ -159,7 +161,7 @@ Clés nécessaires : [OpenRouter](https://openrouter.ai/keys) (paiement à l'usa
 (identifiant de compte + jeton API « Workers AI »).
 
 **Récupérer les artefacts sans rien recalculer** (index ChromaDB, graphe LightRAG, runs) :
-télécharger les zips du Drive ⟨lien à compléter⟩ dans un dossier, puis
+télécharger les zips du [Drive du projet](https://drive.google.com/drive/folders/1RMZwYG4yvwnEqEZI2ZTJeNn9CZK4czNK?usp=sharing) dans un dossier, puis
 
 ```powershell
 uv run python scripts/unpack_artifacts.py --from "C:\chemin\vers\les\zips" --version v1
@@ -420,6 +422,8 @@ similarité ne trouve (n07). Il refuse aussi moins à tort. Ce gain se paie par 
   - Notes instables sur certaines questions d'un passage à l'autre.
   - Réponses parfois mal formées (NaN, re-notées ensuite).
   - Answer correctness pénalise une réponse exacte mais plus courte que la référence (n14).
+- **Déséquilibre des langues.** 5 documents anglais sur 162 : les résultats « anglais » et
+  « inter-langues » portent sur très peu de sources.
 - **Construction du graphe.**
   - Un seul passage d'extraction (`gleaning 0`).
   - Doublons d'entités FR / EN détectés mais non fusionnés.
