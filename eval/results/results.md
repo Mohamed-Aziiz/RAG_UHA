@@ -2,14 +2,14 @@
 
 | axe | métrique | rag_v2 | graphrag_v2 |
 |---|---|---|---|
-| Pertinence | Answer relevancy (RAGAS) ↑ | 0.850 | 0.809 |
-| Pertinence | Answer correctness vs référence (RAGAS) ↑ | 0.801 | 0.725 |
-| Fiabilité | Faithfulness / fidélité aux sources (RAGAS) ↑ | 0.937 | 0.966 |
+| Pertinence | Answer relevancy (RAGAS) ↑ | 0.851 | 0.809 |
+| Pertinence | Answer correctness vs référence (RAGAS) ↑ | 0.797 | 0.743 |
+| Fiabilité | Faithfulness / fidélité aux sources (RAGAS) ↑ | 0.933 | 0.964 |
 | Fiabilité | Refus corrects sur questions hors corpus ↑ | 1.000 | 1.000 |
 | Fiabilité | Refus à tort sur questions répondables ↓ | 0.045 | 0.000 |
-| Récupération | Hit@k (niveau document) ↑ | 0.955 | 1.000 |
+| Récupération | Hit@k (niveau document) ↑ | 0.955 | 0.955 |
 | Récupération | MRR (niveau document) ↑ | 0.769 | 0.761 |
-| Récupération | Rappel des documents attendus @k ↑ | 0.924 | 0.947 |
+| Récupération | Rappel des documents attendus @k ↑ | 0.924 | 0.932 |
 | Performances | Latence médiane par question (s) ↓ | 0.900 | 1.887 |
 | Performances | Latence p95 (s) ↓ | 1.482 | 2.759 |
 | Performances | Latence de recherche médiane (s) ↓ | 0.118 | 0.892 |
@@ -22,12 +22,12 @@
 
 | pipeline | category | n_questions | hit_at_k | mrr | faithfulness | answer_correctness | latency_median_s | tokens_mean |
 |---|---|---|---|---|---|---|---|---|
-| rag_v2 | factual | 11 | 1.000 | 0.864 | 0.984 | 0.850 | 0.900 | 3,666 |
+| rag_v2 | factual | 11 | 1.000 | 0.864 | 0.964 | 0.818 | 0.900 | 3,666 |
 | rag_v2 | multi_hop | 7.000 | 0.857 | 0.690 | 0.917 | 0.747 | 1.047 | 3,714 |
-| rag_v2 | inter_langues | 4.000 | 1.000 | 0.646 | 0.833 | 0.739 | 0.770 | 3,422 |
+| rag_v2 | inter_langues | 4.000 | 1.000 | 0.646 | 0.875 | 0.827 | 0.770 | 3,422 |
 | rag_v2 | hors_corpus | 3.000 | — | — | — | — | 0.514 | 3,564 |
-| graphrag_v2 | factual | 11 | 1.000 | 0.833 | 0.960 | 0.719 | 1.887 | 15,093 |
-| graphrag_v2 | multi_hop | 7.000 | 1.000 | 0.702 | 0.958 | 0.658 | 2.269 | 14,802 |
+| graphrag_v2 | factual | 11 | 1.000 | 0.833 | 0.974 | 0.741 | 1.887 | 15,093 |
+| graphrag_v2 | multi_hop | 7.000 | 0.857 | 0.702 | 0.929 | 0.689 | 2.269 | 14,802 |
 | graphrag_v2 | inter_langues | 4.000 | 1.000 | 0.667 | 1.000 | 0.844 | 2.059 | 14,490 |
 | graphrag_v2 | hors_corpus | 3.000 | — | — | — | — | 1.356 | 15,205 |
 
@@ -36,10 +36,10 @@
 
 | pipeline | lang | n_questions | hit_at_k | mrr | faithfulness | answer_correctness | latency_median_s | tokens_mean |
 |---|---|---|---|---|---|---|---|---|
-| rag_v2 | fr | 16 | 0.929 | 0.756 | 0.926 | 0.796 | 0.885 | 3,614 |
-| rag_v2 | en | 9.000 | 1.000 | 0.792 | 0.952 | 0.809 | 0.900 | 3,654 |
-| graphrag_v2 | fr | 16 | 1.000 | 0.768 | 0.967 | 0.756 | 1.868 | 15,110 |
-| graphrag_v2 | en | 9.000 | 1.000 | 0.750 | 0.964 | 0.680 | 1.924 | 14,606 |
+| rag_v2 | fr | 16 | 0.929 | 0.756 | 0.918 | 0.781 | 0.885 | 3,614 |
+| rag_v2 | en | 9.000 | 1.000 | 0.792 | 0.958 | 0.825 | 0.900 | 3,654 |
+| graphrag_v2 | fr | 16 | 1.000 | 0.768 | 0.980 | 0.780 | 1.868 | 15,110 |
+| graphrag_v2 | en | 9.000 | 0.875 | 0.750 | 0.938 | 0.677 | 1.924 | 14,606 |
 
 
 ## Coût d'indexation
@@ -86,43 +86,42 @@ Le contexte ne précise pas la date ou le moment où le concours de professeur d
 **graphrag_v2** (correctness 0.67, sources fr-formation-1-accompagnement-a-la-reussite-1-numerique, livret-de-rentree-etudiant-uha, fr-formation-1-accompagnement-a-la-reussite-1-langues-certifications-aut, infographie-elan) :
 > Je ne trouve pas cette information dans les documents disponibles.
 
-### n12 (factual, fr) — Depuis quand l'IUT de Mulhouse propose-t-il des formations trinationales, et avec quels partenaires ?
+### n05 (factual, fr) — Qu'est-ce que le projet ÉLAN ?
 
-*Référence :* Depuis 1997, en partenariat avec la Berufsakademie de Lörrach et la Fachhochschule Beider Basel.
+*Référence :* ÉLAN (Éveil à la Liberté et à l'Autonomie dans un monde Numérique) est une initiative de l'UHA pour la réussite étudiante. Il propose un double accompagnement : celui des lycéens et des étudiants, et celui des équipes pédagogiques.
 
-**rag_v2** (correctness 0.92, sources plaquette-uha-formations-bi-trinationales-1e4600, fr-formation-1-facultes-iut-ecoles-d-ingenieurs-iutm-institut-universita, fr-formation-1-formations-bi-trinationales-transfrontalieres) :
-> L’IUT de Mulhouse propose des formations trinationales depuis 1997, en partenariat avec la Berufsakademie de Lörrach (Allemagne) et la Fachhochschule Beider Basel (Suisse)[fr-formation-1-facultes-iut-ecoles-d-ingenieurs-iutm-institut-universita].
+**rag_v2** (correctness 0.50, sources fr-formation-1-accompagnement-a-la-reussite-1-elan-eveil-a-la-liberte-et, infographie-elan, rapport-activite-demouha-2022-2026-1e4600, fr-formation-1-grands-projets-de-formation-dune-eole) :
+> Le projet ÉLAN (Éveil à la Liberté et à l’Autonomie dans un monde Numérique) est une initiative de l’Université de Haute‑Alsace visant la réussite étudiante ; il propose un double accompagnement : d’une part, il forme les enseignants du lycée et de l’université pour soutenir les lycéens et les étudiants dans leurs choix d’orientation, et d’autre part, il aide les équipes pédagogiques à transformer l’offre de formation (modularisation, asynchronisme) afin que les étudiants puissent personnaliser leur parcours ; le projet met également à disposition des outils pédagogiques numériques et un obser
 
-**graphrag_v2** (correctness 0.92, sources plaquette-uha-formations-bi-trinationales-1e4600, fr-formation-1-accompagnement-a-la-reussite-1-elan-eveil-a-la-liberte-et, fr-formation-1-facultes-iut-ecoles-d-ingenieurs-iutm-institut-universita, fr-formation-1-accompagnement-a-la-reussite-1-learning-center) :
-> L’IUT de Mulhouse propose des formations trinationales depuis 1997, en partenariat avec la Berufsakademie de Lörrach (Allemagne) et la Fachhochschule Beider Basel (Suisse)[fr-formation-1-facultes-iut-ecoles-d-ingenieurs-iutm-institut-universita::0].
+**graphrag_v2** (correctness 0.62, sources fr-formation-1-accompagnement-a-la-reussite-1-elan-eveil-a-la-liberte-et, infographie-elan, fr-formation-1-accompagnement-a-la-reussite-1-matieres-ouvertes, rapport-activite-demouha-2022-2026-1e4600) :
+> Le projet ÉLAN (Éveil à la Liberté et à l’Autonomie dans un monde Numérique) est une initiative de l’Université de Haute‑Alsace visant à favoriser la réussite étudiante en proposant un double accompagnement : d’une part, un soutien aux lycéens, aux étudiants et aux équipes pédagogiques pour les aider à faire des choix d’orientation adaptés ; d’autre part, un appui aux équipes pédagogiques dans la transformation de l’offre de formation afin de permettre aux étudiants de personnaliser leur parcours grâce à la modularisation et à l’asynchronisme des contenus [fr-formation-1-accompagnement-a-la-re
 
-### n10 (multi_hop, fr) — Si je pars un semestre dans une université partenaire, est-ce que mes notes comptent à l'UHA, et qui je contacte ?
+### n03 (factual, fr) — Combien de temps dure un doctorat ?
 
-*Référence :* Oui : les résultats obtenus dans l'université partenaire sont reconnus par l'UHA, transcrits en notes françaises, et les crédits ECTS sont attribués automatiquement. Contact : international@uha.fr.
+*Référence :* Il se prépare en 3 ou 4 ans après un bac+5, au sein d'un laboratoire de recherche.
 
-**rag_v2** (correctness 0.83, sources fr-formation-1-accompagnement-a-la-reussite-1-mobilites-internationales, fr-formation-1-domaines-de-formation-diplomes-sciences-humaines-et-socia, livret-de-rentree-etudiant-uha) :
-> Oui, les résultats d’examens obtenus dans l’université partenaire sont reconnus par l’UHA, transcrits en notes françaises et les crédits ECTS correspondants sont automatiquement attribués ; vous pouvez donc valider votre semestre à l’étranger [fr-formation-1-accompagnement-a-la-reussite-1-mobilites-internationales].  
-Pour toute question, il faut contacter le service international à l’adresse international@uha.fr [fr-formation-1-accompagnement-a-la-reussite-1-mobilites-internationales].
+**rag_v2** (correctness 0.95, sources fr-formation-1-domaines-de-formation-diplomes-doctorats, fr-formation-1-domaines-de-formation-diplomes-licences, plaquette-offre-de-formation-uha, fr-formation-1-domaines-de-formation-diplomes-masters) :
+> Le doctorat se prépare en 3 ou 4 ans après le bac + 5 au sein d’un laboratoire de recherche[fr-formation-1-domaines-de-formation-diplomes-doctorats].
 
-**graphrag_v2** (correctness nan, sources fr-formation-1-accompagnement-a-la-reussite-1-mobilites-internationales, infographie-elan, livret-de-rentree-etudiant-uha, fr-formation-1-facultes-iut-ecoles-d-ingenieurs-iutc-institut-universita) :
-> Oui, les notes obtenues à l’étranger sont reconnues, transcrites en notes françaises et les crédits ECTS sont attribués par l’UHA ; vous pouvez vous renseigner auprès du service international à l’adresse international@uha.fr [fr-formation-1-accompagnement-a-la-reussite-1-mobilites-internationales].
+**graphrag_v2** (correctness 0.56, sources fr-formation-1-domaines-de-formation-diplomes-doctorats, fr-formation-1-domaines-de-formation-diplomes-masters, fr-formation-1-grands-projets-de-formation-robothub-academie, fr-formation-1-domaines-de-formation-diplomes-b-u-t) :
+> Le doctorat se prépare en trois à quatre ans après le master (bac + 5) [fr-formation-1-domaines-de-formation-diplomes-doctorats].
 
-### n19 (inter_langues, fr) — Quels sont les départements de la FSESJ ?
+### n14 (factual, en) — How many components does UHA have?
 
-*Référence :* Cinq départements : Droit ; Politique, économie et société ; Hautes études de management ; Histoire et patrimoine ; Information / communication.
+*Référence :* 8 components: 4 faculties, 2 engineering schools and 2 institutes of technology, spread over 5 campuses in Mulhouse and Colmar.
 
-**rag_v2** (correctness nan, sources fr-formation-1-facultes-iut-ecoles-d-ingenieurs-fsesj-faculte-des-scienc, fr-formation-1-facultes-iut-ecoles-d-ingenieurs-flsh-faculte-des-lettres, en-education-and-training-university-components, fr-formation-1-facultes-iut-ecoles-d-ingenieurs) :
-> Les départements de la FSESJ sont : Droit ; Politique, Économie et Société ; Hautes Études de Management ; Histoire et Patrimoine ; et Information‑Communication [en-education-and-training-university-components].
+**rag_v2** (correctness 0.78, sources en-education-and-training-university-components, en-education-and-training-information-and-orientation, rapport-activite-demouha-2022-2026-1e4600, livret-de-rentree-etudiant-uha) :
+> UHA is made up of eight components — four faculties, two engineering schools and two institutes of technology[en-education-and-training-university-components].
 
-**graphrag_v2** (correctness 0.96, sources fr-formation-1-facultes-iut-ecoles-d-ingenieurs-fsesj-faculte-des-scienc, livret-de-rentree-etudiant-uha, en-education-and-training-university-components, fr-formation-1-facultes-iut-ecoles-d-ingenieurs-iutc-institut-universita) :
-> La FSESJ comprend cinq départements : le département de droit, le département de politique, économie et société, le département d’études supérieures de management, le département d’histoire et patrimoine, et le département d’information/communication [en-education-and-training-university-components].
+**graphrag_v2** (correctness 0.38, sources en-education-and-training-university-components, rapport-activite-demouha-2022-2026-1e4600, fr-formation-1-accompagnement-a-la-reussite-1-elan-eveil-a-la-liberte-et, livret-de-rentree-etudiant-uha) :
+> UHA is made up of 8 components [en-education-and-training-university-components].
 
-### n22 (inter_langues, en) — How long does the RobotHub Académie project last, and how is it funded?
+### n18 (multi_hop, en) — Who runs continuing education at UHA, how many programmes are there, and can they help with validation of prior experience?
 
-*Référence :* 38 months, from April 2023 to September 2026. It is co-funded by European INTERREG funds, with a total budget of 3.6 million euros, including 1.5 million from the ERDF (FEDER).
+*Référence :* The SERFA (adult education service). It offers nearly 150 continuing education programmes leading to qualifications or diplomas, and it supports people seeking validation of prior learning and experience (VAE).
 
-**rag_v2** (correctness nan, sources fr-formation-1-grands-projets-de-formation-robothub-academie, en-education-and-training-information-and-orientation, en-education-and-training-university-components, rapport-activite-demouha-2022-2026-1e4600) :
-> The RobotHub Académie project runs for 38 months, from April 2023 to September 2026 [fr-formation-1-grands-projets-de-formation-robothub-academie]. It is co‑financed by European INTERREG funds with a total budget of €3.6 million, of which €1.5 million comes from the FEDER programme [fr-formation-1-grands-projets-de-formation-robothub-academie].
+**rag_v2** (correctness 0.86, sources fr-formation-1-orientation-decouverte-des-formations-1-continuum-lycee-u, en-education-and-training-information-and-orientation, en-education-and-training-university-components, plaquette-offre-de-formation-uha) :
+> Continuing education at UHA is delivered by the Adult Education, Research and Training Service (SERFA) [en-education-and-training-university-components]. It offers almost 150 continuing professional education and training programmes [en-education-and-training-university-components]. SERFA also serves as the first point of contact for adults seeking validation of prior learning and experience (VAE) [en-education-and-training-university-components].
 
-**graphrag_v2** (correctness 0.94, sources fr-formation-1-grands-projets-de-formation-robothub-academie, rapport-activite-demouha-2022-2026-1e4600, fr-formation-1-accompagnement-a-la-reussite-1, fr-formation-1-grands-projets-de-formation-demouha) :
-> The RobotHub Académie project runs for 38 months, from April 2023 until September 2026 [fr-formation-1-grands-projets-de-formation-robothub-academie]. It is co‑financed by the European INTERREG programme with a total budget of €3.6 million, of which €1.5 million comes from the FEDER fund [fr-formation-1-grands-projets-de-formation-robothub-academie].
+**graphrag_v2** (correctness 0.34, sources fr-formation-1-orientation-decouverte-des-formations-1-continuum-lycee-u, fr-formation-1-accompagnement-a-la-reussite-1-langues-certifications-aut, plaquette-offre-de-formation-uha, fr-formation-1-accompagnement-a-la-reussite-1-numerique) :
+> The continuing‑education activities are organised by the “Formation tout au long de la vie” programme of the Université de Haute‑Alsace, which also includes the VAE (validation des acquis de l’expérience) procedure to recognise prior professional experience [fr-formation-1]. I do not find in the provided documents a specific count of how many continuing‑education programmes are offered.

@@ -1,0 +1,523 @@
+{
+  "excluded_patterns": [
+    "*les-news-du-sup*"
+  ],
+  "n_documents": 62,
+  "n_chunks": 108,
+  "total_tokens": 86499,
+  "by_lang": {
+    "en": 5,
+    "fr": 57
+  },
+  "by_format": {
+    "md": 56,
+    "pdf": 6
+  },
+  "chunks_by_lang": {
+    "en": 6,
+    "fr": 102
+  },
+  "chunking": {
+    "chunk_tokens": 1200,
+    "overlap_tokens": 100,
+    "tokenizer": "cl100k_base"
+  },
+  "documents": [
+    {
+      "doc_id": "en-education-and-training-fields-of-training-and-qualifications",
+      "title": "Fields of training and qualifications - CMS Java Open Source",
+      "lang": "en",
+      "fmt": "md",
+      "tokens": 359,
+      "chunks": 1
+    },
+    {
+      "doc_id": "en-education-and-training-information-and-orientation",
+      "title": "Information and orientation - CMS Java Open Source",
+      "lang": "en",
+      "fmt": "md",
+      "tokens": 448,
+      "chunks": 1
+    },
+    {
+      "doc_id": "en-education-and-training-international-education",
+      "title": "International education - CMS Java Open Source",
+      "lang": "en",
+      "fmt": "md",
+      "tokens": 282,
+      "chunks": 1
+    },
+    {
+      "doc_id": "en-education-and-training-university-components",
+      "title": "University components - CMS Java Open Source",
+      "lang": "en",
+      "fmt": "md",
+      "tokens": 1352,
+      "chunks": 2
+    },
+    {
+      "doc_id": "en-education-and-training",
+      "title": "Fields of training and qualifications",
+      "lang": "en",
+      "fmt": "md",
+      "tokens": 221,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-accompagnement-a-la-reussite-1-elan-eveil-a-la-liberte-et",
+      "title": "ÉLAN - Éveil à la Liberté et à l'Autonomie dans un monde Numérique - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 1959,
+      "chunks": 2
+    },
+    {
+      "doc_id": "fr-formation-1-accompagnement-a-la-reussite-1-etre-etudiant-a-l-universi",
+      "title": "Être étudiant à l'université - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 1560,
+      "chunks": 2
+    },
+    {
+      "doc_id": "fr-formation-1-accompagnement-a-la-reussite-1-formations-innovantes-4-0",
+      "title": "Formations innovantes 4.0 - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 1031,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-accompagnement-a-la-reussite-1-langues-certifications-aut",
+      "title": "Langues, certifications & auto-formation accompagnée - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 1543,
+      "chunks": 2
+    },
+    {
+      "doc_id": "fr-formation-1-accompagnement-a-la-reussite-1-learning-center",
+      "title": "Learning Center - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 1065,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-accompagnement-a-la-reussite-1-matieres-ouvertes",
+      "title": "Matières ouvertes - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 550,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-accompagnement-a-la-reussite-1-mobilites-internationales",
+      "title": "Partir à l'étranger avec Eucor - Le Campus européen",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 486,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-accompagnement-a-la-reussite-1-numerique",
+      "title": "Numérique - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 634,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-accompagnement-a-la-reussite-1-pedagogie-universitaire-in",
+      "title": "Pédagogie universitaire innovante - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 1113,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-accompagnement-a-la-reussite-1",
+      "title": "Être étudiant à l'université",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 278,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-domaines-de-formation-diplomes-arts-lettres-et-langues",
+      "title": "Arts, lettres et langues - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 474,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-domaines-de-formation-diplomes-b-u-t",
+      "title": "B.U.T. - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 294,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-domaines-de-formation-diplomes-cycles-preparatoires",
+      "title": "Cycles préparatoires - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 1053,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-domaines-de-formation-diplomes-diplomes-d-ingenieurs",
+      "title": "Diplômes d'ingénieurs - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 904,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-domaines-de-formation-diplomes-doctorats",
+      "title": "Doctorats - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 767,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-domaines-de-formation-diplomes-droit-economie-gestion",
+      "title": "Droit, économie, gestion - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 658,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-domaines-de-formation-diplomes-du-de-d2e",
+      "title": "DU, DE, D2E - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 1992,
+      "chunks": 2
+    },
+    {
+      "doc_id": "fr-formation-1-domaines-de-formation-diplomes-licences-professionnelles",
+      "title": "Licences Professionnelles - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 756,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-domaines-de-formation-diplomes-licences",
+      "title": "Licences - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 680,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-domaines-de-formation-diplomes-masters",
+      "title": "Masters - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 770,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-domaines-de-formation-diplomes-metiers-de-l-enseignement",
+      "title": "Métiers de l'enseignement - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 433,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-domaines-de-formation-diplomes-sciences-humaines-et-socia",
+      "title": "Sciences humaines et sociales - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 499,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-domaines-de-formation-diplomes-sciences-technologies-sant",
+      "title": "Sciences, technologies, santé - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 308,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-domaines-de-formation-diplomes",
+      "title": "Arts, lettres et langues",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 340,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-facultes-iut-ecoles-d-ingenieurs-enscmu-ecole-nationale-s",
+      "title": "ENSCMu | École Nationale Supérieure de Chimie de Mulhouse - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 850,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-facultes-iut-ecoles-d-ingenieurs-ensisa-ecole-nationale-s",
+      "title": "ENSISA | École Nationale Supérieure d'Ingénieurs Sud-Alsace - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 650,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-facultes-iut-ecoles-d-ingenieurs-flsh-faculte-des-lettres",
+      "title": "FLSH | Faculté des Lettres, langues et Sciences Humaines - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 516,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-facultes-iut-ecoles-d-ingenieurs-fsesj-faculte-des-scienc",
+      "title": "FSESJ | Faculté des Sciences Économiques, Sociales et Juridiques - Campus Fonderie - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 470,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-facultes-iut-ecoles-d-ingenieurs-fst-faculte-des-sciences",
+      "title": "FST | Faculté des Sciences et Techniques - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 375,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-facultes-iut-ecoles-d-ingenieurs-iutc-institut-universita",
+      "title": "IUTC | Institut Universitaire de Technologie de Colmar - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 575,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-facultes-iut-ecoles-d-ingenieurs-iutm-institut-universita",
+      "title": "IUTM | Institut Universitaire de Technologie de Mulhouse - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 571,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-facultes-iut-ecoles-d-ingenieurs-uha-business-school",
+      "title": "UHA Business School - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 742,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-facultes-iut-ecoles-d-ingenieurs",
+      "title": "FLSH | Faculté des Lettres, langues et Sciences Humaines",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 270,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-formation-tout-au-long-de-la-vie",
+      "title": "Formation tout au long de la vie - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 513,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-formations-bi-trinationales-transfrontalieres",
+      "title": "Formations bi-trinationales & transfrontalières - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 432,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-formations-en-alternance-apprentissage",
+      "title": "Formations en alternance & apprentissage - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 670,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-grands-projets-de-formation-campus-des-metiers-et-des-qua-16b7e3",
+      "title": "Campus des métiers et des qualifications Industrie du futur et numérique - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 1425,
+      "chunks": 2
+    },
+    {
+      "doc_id": "fr-formation-1-grands-projets-de-formation-campus-des-metiers-et-des-qua",
+      "title": "Campus des métiers et des qualifications agroalimentaire Grand Est - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 1805,
+      "chunks": 2
+    },
+    {
+      "doc_id": "fr-formation-1-grands-projets-de-formation-demouha",
+      "title": "DémoUHA - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 1654,
+      "chunks": 2
+    },
+    {
+      "doc_id": "fr-formation-1-grands-projets-de-formation-dune-eole",
+      "title": "Articles en lien avec le projet Dune EOLE",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 1152,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-grands-projets-de-formation-hill-hybrid-innovation-learni",
+      "title": "HILL - Hybrid Innovation-Learning Lab - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 448,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-grands-projets-de-formation-mat-light-4-0",
+      "title": "Mat-Light 4.0 - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 719,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-grands-projets-de-formation-noria",
+      "title": "Noria - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 963,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-grands-projets-de-formation-robothub-academie",
+      "title": "RobotHub Académie - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 663,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-orientation-decouverte-des-formations-1-accompagnement-a",
+      "title": "Accompagnement à l'orientation - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 1302,
+      "chunks": 2
+    },
+    {
+      "doc_id": "fr-formation-1-orientation-decouverte-des-formations-1-continuum-lycee-u",
+      "title": "Continuum Lycée-Université - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 1219,
+      "chunks": 2
+    },
+    {
+      "doc_id": "fr-formation-1-orientation-decouverte-des-formations-1-immersion-dans-un",
+      "title": "Immersion dans une filière - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 777,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-orientation-decouverte-des-formations-1-presentations-dan",
+      "title": "Présentations dans les lycées - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 874,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1-orientation-decouverte-des-formations-1-salons-portes-ouv",
+      "title": "Salons & portes ouvertes - UHA",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 1659,
+      "chunks": 2
+    },
+    {
+      "doc_id": "fr-formation-1-orientation-decouverte-des-formations-1",
+      "title": "Accompagnement à l'orientation",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 628,
+      "chunks": 1
+    },
+    {
+      "doc_id": "fr-formation-1",
+      "title": "Orientation & découverte des formations",
+      "lang": "fr",
+      "fmt": "md",
+      "tokens": 315,
+      "chunks": 1
+    },
+    {
+      "doc_id": "infographie-elan",
+      "title": "MD-affiche-elan-2021",
+      "lang": "fr",
+      "fmt": "pdf",
+      "tokens": 535,
+      "chunks": 1
+    },
+    {
+      "doc_id": "livret-de-rentree-etudiant-uha",
+      "title": "2 L’édito",
+      "lang": "fr",
+      "fmt": "pdf",
+      "tokens": 11398,
+      "chunks": 11
+    },
+    {
+      "doc_id": "plaquette-offre-de-formation-uha",
+      "title": "Colmar",
+      "lang": "fr",
+      "fmt": "pdf",
+      "tokens": 9494,
+      "chunks": 9
+    },
+    {
+      "doc_id": "plaquette-uha-formations-bi-trinationales-1e4600",
+      "title": "4  |  Formations bi ou tri nationales",
+      "lang": "fr",
+      "fmt": "pdf",
+      "tokens": 3975,
+      "chunks": 4
+    },
+    {
+      "doc_id": "presentation-cmq-industrie-du-futur-et-numerique-1e4600",
+      "title": "Microsoft PowerPoint - m2A_PPT_CMQ_v8.pptx",
+      "lang": "fr",
+      "fmt": "pdf",
+      "tokens": 1621,
+      "chunks": 2
+    },
+    {
+      "doc_id": "rapport-activite-demouha-2022-2026-1e4600",
+      "title": "Démo UHA",
+      "lang": "fr",
+      "fmt": "pdf",
+      "tokens": 14430,
+      "chunks": 14
+    }
+  ]
+}

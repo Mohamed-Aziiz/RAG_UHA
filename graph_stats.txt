@@ -1,0 +1,125 @@
+{
+  "n_entities": 1129,
+  "n_relations": 1110,
+  "n_components": 196,
+  "by_type": {
+    "formation": 231,
+    "organisation": 200,
+    "other": 170,
+    "service": 114,
+    "lieu": 107,
+    "personne": 75,
+    "composante": 64,
+    "diplome": 49,
+    "date": 45,
+    "procedure": 44,
+    "cours": 11,
+    "laboratoire": 10,
+    "UNKNOWN": 9
+  },
+  "top_degree": [
+    [
+      "Université de Haute-Alsace (UHA)",
+      240
+    ],
+    [
+      "DémoUHA",
+      67
+    ],
+    [
+      "Learning Center",
+      38
+    ],
+    [
+      "Campus des Métiers et des Qualifications Agroalimentaire Grand Est",
+      31
+    ],
+    [
+      "Domain Law, Economy, Management",
+      18
+    ],
+    [
+      "Students",
+      17
+    ],
+    [
+      "Faculté des Sciences et Techniques (FST)",
+      17
+    ],
+    [
+      "Service Communication UHA",
+      17
+    ],
+    [
+      "DemoES",
+      17
+    ],
+    [
+      "Licence Professionnelle",
+      16
+    ],
+    [
+      "École Nationale Supérieure de Chimie de Mulhouse (ENSCMu)",
+      16
+    ],
+    [
+      "Institut Universitaire de Technologie de Colmar (IUTC)",
+      15
+    ],
+    [
+      "Diplôme dingénieur",
+      14
+    ],
+    [
+      "École Nationale Supérieure d'Ingénieurs Sud-Alsace (ENSISA)",
+      14
+    ],
+    [
+      "Université de Haute‑Alsace (UHA)",
+      14
+    ]
+  ]
+}
+
+112 paires d'entités de même type avec similarité >= 0.9 :
+  0.999  Faculté des Lettres et Sciences Humaines (FLSH)  <->  Faculté de Lettres et Sciences Humaines (FLSH)
+  0.998  Université de Haute-Alsace (UHA)  <->  Université de Haute‑Alsace (UHA)
+  0.998  Faculté des Lettres, langues et Sciences Humaines (FLSH)  <->  Faculté des Lettres, Langues et Sciences Humaines (FLSH)
+  0.995  Institut Universitaire de Technologie de Colmar (IUT de Colmar)  <->  Institut Universitaire de Technologie de Colmar (IUT Colmar)
+  0.994  Institut Universitaire de Technologie de Mulhouse (IUT de Mulhouse)  <->  Institut Universitaire de Technologie de Mulhouse (IUT Mulhouse)
+  0.993  e-services.uha.fr  <->  e‑services.uha.fr
+  0.993  Université de Haute-Alsace (UHA)  <->  Université Haute-Alsace (UHA)
+  0.992  Cycle préparatoire, Licence renforcée (CUPGE)  <->  Cycle Préparatoire, Licence Renforcée (CUPGE)
+  0.991  Université de Haute‑Alsace (UHA)  <->  Université Haute-Alsace (UHA)
+  0.988  Cursus Intégré pour la Formation Transfrontalière dEnseignants (CIFTE) 1er degré  <->  Cursus Intégré Formation Transfrontalière dEnseignants (CIFTE) 1er degré
+  0.988  Grillenbreit Campus  <->  Campus Grillenbreit
+  0.988  Faculté des Sciences Économiques, Sociales et Juridiques (FSESJ)  <->  Faculté des Sciences Economiques, Sociales et Juridiques (FSESJ)
+  0.987  École Nationale Supérieure de Chimie de Mulhouse (ENSCMu)  <->  École Nationale Supérieure de Chimie et de Matériaux de Mulhouse (ENSCMu)
+  0.987  Université de Haute-Alsace (UHA)  <->  Universite de Haute-Alsace (UHA)
+  0.986  École Nationale Supérieure d'Ingénieurs Sud-Alsace (ENSISA)  <->  École Nationale Supérieure d'Ingénieurs Sud Alsace (ENSISA)
+  0.984  Universite de Haute-Alsace (UHA)  <->  Université de Haute‑Alsace (UHA)
+  0.984  B.U.T. Techniques de commercialisation (TC)  <->  B.U.T. Techniques de Commercialisation (TC)
+  0.983  Service de Santé Étudiante (SSE)  <->  Service de Santé des Étudiants (SSE)
+  0.982  Universite de Haute-Alsace (UHA)  <->  Université Haute-Alsace (UHA)
+  0.981  Illberg Campus  <->  Campus Illberg
+  0.981  Collines Campus  <->  Campus Collines
+  0.981  Mat-Light 4.0  <->  Mat‑Light 4.0
+  0.980  Campus Mulhouse  <->  Mulhouse Campus
+  0.978  B.U.T. Génie mécanique et productique (GMP)  <->  B.U.T. Génie Mécanique et Productique (GMP)
+  0.976  Université de Haute-Alsace (UHA)  <->  Université de Haute-Alsasse (UHA)
+  0.975  Fonderie Campus  <->  Campus Fonderie
+  0.975  Université de Haute‑Alsace (UHA)  <->  Université de Haute-Alsasse (UHA)
+  0.975  Campus Colmar  <->  Colmar Campus
+  0.974  Faculté de Lettres et Sciences Humaines (FLSH)  <->  Faculté des Lettres, Langues et Sciences Humaines (FLSH)
+  0.974  34 rue du Grillenbreit, 68008 COLMAR Cedex  <->  32 rue du Grillenbreit, 68008 COLMAR Cedex
+  0.974  Faculté des Lettres et Sciences Humaines (FLSH)  <->  Faculté des Lettres, Langues et Sciences Humaines (FLSH)
+  0.973  Faculté des Lettres, langues et Sciences Humaines (FLSH)  <->  Faculté de Lettres et Sciences Humaines (FLSH)
+  0.973  Conseil de l'Europe  <->  Conseil de lEurope
+  0.972  Faculté des Lettres, langues et Sciences Humaines (FLSH)  <->  Faculté des Lettres et Sciences Humaines (FLSH)
+  0.972  1 July 2026  <->  1er juillet 2026
+  0.970  34 rue du Grillenbreit, 68008 COLMAR Cedex  <->  34 rue du Grillenbreit, 68 008 Colmar Cedex
+  0.970  12 rue des Frères Lumière, 68093 Mulhouse Cedex  <->  18 Rue des Frères Lumière, 68093 Mulhouse Cedex
+  0.969  Université de Haute-Alsasse (UHA)  <->  Université Haute-Alsace (UHA)
+  0.968  Eucor – The European Campus  <->  Eucor – Le Campus européen
+  0.968  UHA 4.0.1  <->  UHA 4.0.2
+→ C:\Users\m_gue\Desktop\RAG_UHA\data\artifacts\lightrag\duplicates.json
