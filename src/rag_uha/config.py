@@ -35,8 +35,10 @@ class _Strict(BaseModel):
 
 
 class AppSettings(_Strict):
-    name: str = "Assistant UHA"
-    logo_path: Path = Path("app/assets/logo_uha.png")
+    name: str = "Kayo AI"
+    assistant_logo_path: Path = Path("app/assets/kayo_logo.svg")
+    assistant_icon_path: Path = Path("app/assets/kayo_icon.png")
+    logo_path: Path = Path("app/assets/logo_uha.svg")
     default_mode: Literal["rag", "graphrag", "both"] = "both"
 
 
@@ -205,6 +207,8 @@ def load_settings(config_path: str | Path = DEFAULT_CONFIG) -> Settings:
 
     settings = Settings(**data, config_path=path)
     settings.paths = settings.paths.resolve(PROJECT_ROOT)
-    if not settings.app.logo_path.is_absolute():
-        settings.app.logo_path = PROJECT_ROOT / settings.app.logo_path
+    for field in ("logo_path", "assistant_logo_path", "assistant_icon_path"):
+        p = getattr(settings.app, field)
+        if not p.is_absolute():
+            setattr(settings.app, field, PROJECT_ROOT / p)
     return settings

@@ -1,4 +1,6 @@
-# Assistant UHA — RAG classique vs GraphRAG
+<img src="app/assets/kayo_logo.svg" alt="Kayo AI" width="260">
+
+# Kayo AI — assistant documentaire de l'UHA (RAG classique vs GraphRAG)
 
 > Projet de module — Master 1 Data Science, Université de Haute-Alsace — novembre 2026.
 > Équipe : Mohamed Aziz, Amar, Naima, Lisa. Dépôt : https://github.com/Mohamed-Aziiz/RAG_UHA

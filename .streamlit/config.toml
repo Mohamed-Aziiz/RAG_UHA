@@ -1,6 +1,6 @@
-# Couleurs de l'interface (charte UHA : remplacer par les codes officiels fournis)
+# Couleurs de l'interface
 [theme]
-primaryColor = "#004C97"            # couleur principale (boutons, accents)
+primaryColor = "#F28C28"            # orange du logo Kayo AI (bouton Rechercher, accents)
 backgroundColor = "#FFFFFF"
 secondaryBackgroundColor = "#F2F5F9"
 textColor = "#1F2937"

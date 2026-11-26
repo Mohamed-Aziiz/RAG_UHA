@@ -8,6 +8,7 @@ Mode hors ligne : si l'API est indisponible, les réponses enregistrées dans
 
 from __future__ import annotations
 
+import base64
 import json
 import sys
 from pathlib import Path
@@ -21,7 +22,12 @@ from rag_uha.config import load_settings
 from rag_uha.types import Answer
 
 settings = load_settings()
-st.set_page_config(page_title=settings.app.name, page_icon="🎓", layout="wide")
+_icon = settings.app.assistant_icon_path
+st.set_page_config(
+    page_title=settings.app.name,
+    page_icon=str(_icon) if _icon.exists() else "🎓",
+    layout="wide",
+)
 
 
 @st.cache_resource(show_spinner="Chargement du pipeline…")
@@ -42,6 +48,12 @@ def graph():
     from rag_uha.indexing.graph_index import load_graph
 
     return load_graph(settings)
+
+
+def _data_uri(path: Path) -> str:
+    """Image locale encodée pour l'insérer dans du HTML (st.markdown ne sert pas les fichiers)."""
+    mime = "image/svg+xml" if path.suffix == ".svg" else f"image/{path.suffix.lstrip('.')}"
+    return f"data:{mime};base64,{base64.b64encode(path.read_bytes()).decode()}"
 
 
 def ask(name: str, question: str, offline: bool) -> Answer:
@@ -89,9 +101,22 @@ def show_answer(ans: Answer) -> None:
 
 # ------------------------------------------------------------------ page
 with st.sidebar:
-    if settings.app.logo_path.exists():
-        st.image(str(settings.app.logo_path), use_container_width=True)
-    st.title(settings.app.name)
+    sidebar_logos = [
+        f'<img src="{_data_uri(p)}" alt="{alt}" style="width:{w};height:auto;min-width:0">'
+        for p, alt, w in [
+            (settings.app.assistant_logo_path, settings.app.name, "52%"),
+            (settings.app.logo_path, "Université de Haute-Alsace", "40%"),
+        ]
+        if p.exists()
+    ]
+    if sidebar_logos:
+        # Logo de l'assistant | séparateur vertical | logo de l'université.
+        sep = '<div style="flex:0 0 2px;align-self:stretch;background:#D9E2EC"></div>'
+        st.markdown(
+            '<div style="display:flex;align-items:center;justify-content:space-between;'
+            f'gap:10px;margin-bottom:8px">{sep.join(sidebar_logos)}</div>',
+            unsafe_allow_html=True,
+        )
     st.caption("Assistant documentaire de l'Université de Haute-Alsace — RAG classique vs GraphRAG")
     mode = st.radio(
         "Architecture",
@@ -108,7 +133,16 @@ with st.sidebar:
         for q in list(next(iter(demo_cache().values()), {}).keys())[:8]:
             st.caption(f"• {q}")
 
-st.header(settings.app.name)
+if settings.app.assistant_logo_path.exists():
+    # Grand logo de l'assistant en tête de page, puis une ligne horizontale.
+    st.markdown(
+        f'<img src="{_data_uri(settings.app.assistant_logo_path)}" alt="{settings.app.name}"'
+        ' style="height:84px">'
+        '<hr style="border:none;border-top:2px solid #D9E2EC;margin:20px 0 28px">',
+        unsafe_allow_html=True,
+    )
+else:
+    st.header(settings.app.name)
 question = st.text_input(
     "Posez votre question (français ou anglais)",
     placeholder="Ex. : Quelles sont les conditions d'admission en Master Data Science ?",

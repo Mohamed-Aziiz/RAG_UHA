@@ -2,7 +2,9 @@
 # Les cles API sont dans .env (voir .env.example), jamais dans ce fichier.
 
 app:
-  name: "Assistant UHA"            # nom provisoire : a changer ici seulement
+  name: "Kayo AI"                  # nom de l'assistant : a changer ici seulement
+  assistant_logo_path: app/assets/kayo_logo.svg  # logo de l'assistant (kayo_logo_sombre.svg pour un fond sombre)
+  assistant_icon_path: app/assets/kayo_icon.png  # icone de l'onglet et logo replie
   logo_path: app/assets/logo_uha.svg  # logo officiel du site www.uha.fr
   default_mode: both               # rag | graphrag | both (cote a cote)
   # Les couleurs sont dans .streamlit/config.toml (mecanisme natif de Streamlit).
